@@ -1,7 +1,7 @@
 package com.github.jyoo980.reachhover.services
 
-import com.intellij.openapi.project.Project
 import com.github.jyoo980.reachhover.MyBundle
+import com.intellij.openapi.project.Project
 
 class MyProjectService(project: Project) {
 
