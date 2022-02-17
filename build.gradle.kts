@@ -14,6 +14,8 @@ plugins {
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
+    // Formatting
+    id("com.diffplug.spotless") version "6.3.0"
 }
 
 group = properties("pluginGroup")
@@ -46,6 +48,12 @@ qodana {
     reportPath.set(projectDir.resolve("build/reports/inspections").canonicalPath)
     saveReport.set(true)
     showReport.set(System.getenv("QODANA_SHOW_REPORT")?.toBoolean() ?: false)
+}
+
+spotless {
+    kotlin {
+        ktfmt("0.32").kotlinlangStyle()
+    }
 }
 
 tasks {
