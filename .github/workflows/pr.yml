@@ -15,7 +15,6 @@ jobs:
           distribution: zulu
           java-version: 11
           cache: gradle
-      - run: ./gradlew spotlessKotlinCheck
-        with:
           report-path: build/reports/*.xml # Support glob patterns by https://www.npmjs.com/package/@actions/glob
           continue-on-error: false # If annotations contain error of severity, action-android-lint exit 1.
+      - run: ./gradlew spotlessKotlinCheck
