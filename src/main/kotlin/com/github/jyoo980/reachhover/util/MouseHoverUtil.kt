@@ -20,7 +20,7 @@ object MouseHoverUtil {
      */
     fun targetOffset(event: EditorMouseEvent): Int? {
         return if (this.isHoverInValidArea(event)) {
-            return event.offset
+            event.offset
         } else null
     }
 
@@ -40,7 +40,7 @@ object MouseHoverUtil {
             if (element is PsiWhiteSpace) {
                 element = it.findElementAt(element.textRange.startOffset - 1)
             }
-            return element
+            element
         }
     }
 
@@ -56,7 +56,7 @@ object MouseHoverUtil {
         return event.editor is EditorEx &&
             event.editor.project != null &&
             event.area == EditorMouseEventArea.EDITING_AREA &&
-            event.mouseEvent.modifiers == 0 &&
+            event.mouseEvent.modifiersEx == 0 &&
             event.isOverText &&
             event.collapsedFoldRegion == null
     }
