@@ -15,7 +15,7 @@ sealed class ReachabilityButton(element: PsiElement) {
     private val elementUnderCursor = element
     // TODO: Either come up with a custom icon, or find a way to resize (QuestionDialog is 32x32, we
     // need 16x16).
-    val button: JButton =
+    val ui: JButton =
         JButton(AllIcons.General.QuestionDialog).also {
             it.horizontalAlignment = SwingConstants.LEFT
             it.isBorderPainted = false
@@ -27,7 +27,7 @@ sealed class ReachabilityButton(element: PsiElement) {
     open fun activateAction(editor: Editor) {
         // TODO: stub behaviour, link this to actual reachability action later. Should be an
         // abstract fun once we're done.
-        this.button.addActionListener {
+        this.ui.addActionListener {
             Desktop.getDesktop().browse(URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
         }
     }
@@ -39,16 +39,16 @@ sealed class ReachabilityButton(element: PsiElement) {
     }
 }
 
-class ForwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
+class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
 
     override fun setButtonText() {
         val nameOfArgumentToInspect = this.optIdentifierName() ?: "this argument"
         val textToSet = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
-        this.button.text = "<html>$textToSet</html>"
+        this.ui.text = "<html>$textToSet</html>"
     }
 
     override fun activateAction(editor: Editor) {
-        this.button.addActionListener {
+        this.ui.addActionListener {
             // TODO: wire this up.
         }
     }
