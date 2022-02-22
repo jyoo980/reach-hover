@@ -8,6 +8,9 @@ import javax.swing.SwingConstants
 // TODO: May need to parameterize this with a PsiElement to properly register "Show Docs" action.
 class ShowDocumentationButton {
 
+    // Text of this button reads: "Show types and documentation?"
+    private val defaultButtonText: String = MyBundle.message("showDocumentation")
+
     val ui: JButton =
         JButton(AllIcons.Toolwindows.Documentation).also {
             it.horizontalAlignment = SwingConstants.LEFT
@@ -15,8 +18,8 @@ class ShowDocumentationButton {
             it.isContentAreaFilled = false
         }
 
-    fun setButtonText() {
-        this.ui.text = MyBundle.message("showDocumentation")
+    fun setButtonText(optText: String? = null) {
+        this.ui.text = optText ?: this.defaultButtonText
     }
 
     fun activateAction() {
