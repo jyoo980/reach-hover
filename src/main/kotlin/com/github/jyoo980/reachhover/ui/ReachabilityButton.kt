@@ -46,7 +46,8 @@ class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(eleme
             optText
                 ?: kotlin.run {
                     val nameOfArgumentToInspect = this.optIdentifierName() ?: "this argument"
-                    MyBundle.message("createdQuestion", nameOfArgumentToInspect)
+                    val fullText = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
+                    "<html>$fullText</html"
                 }
         this.ui.text = textToSet
     }

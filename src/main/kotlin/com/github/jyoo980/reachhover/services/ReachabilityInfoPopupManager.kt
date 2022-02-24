@@ -22,9 +22,10 @@ class ReachabilityInfoPopupManager {
             }
         }
         this.optCurrentContext = latestContext
+        // TODO: Really only want to invoke this when the PsiElement is a local variable or a method
+        // argument.
         this.optCurrentContext?.also {
-            val popupUI =
-                this.reachabilityPopupBuilder.constructPopupFor(it.elementToInspect).getUI()
+            val popupUI = this.reachabilityPopupBuilder.constructPopupFor(it.elementToInspect)
             val popup =
                 JBPopupFactory.getInstance()
                     .createComponentPopupBuilder(popupUI, null)
