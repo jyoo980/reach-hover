@@ -46,7 +46,28 @@ class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(eleme
             optText
                 ?: kotlin.run {
                     val nameOfArgumentToInspect = this.optIdentifierName() ?: "this argument"
-                    MyBundle.message("createdQuestion", nameOfArgumentToInspect)
+                    val fullText = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
+                    "<html>$fullText</html>"
+                }
+        this.ui.text = textToSet
+    }
+
+    override fun activateAction(editor: Editor) {
+        this.ui.addActionListener {
+            // TODO: wire this up.
+        }
+    }
+}
+
+class ForwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
+
+    override fun setButtonText(optText: String?) {
+        val textToSet =
+            optText
+                ?: kotlin.run {
+                    val nameOfArgumentToInspect = this.optIdentifierName() ?: "this value"
+                    val fullText = MyBundle.message("modifiedQuestion", nameOfArgumentToInspect)
+                    "<html>$fullText</html>"
                 }
         this.ui.text = textToSet
     }
