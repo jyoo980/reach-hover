@@ -15,7 +15,8 @@ class ReachabilityInfoPopupManager {
     private var currentPopupRef: WeakReference<JBPopup>? = null
 
     fun showReachabilityPopupFor(latestContext: ReachabilityHoverContext) {
-        currentContext = latestContext.takeUnless {
+        currentContext =
+            latestContext.takeUnless {
                 currentContext?.elementToInspect?.isEquivalentTo(it.elementToInspect) ?: false
             }
                 ?: return
