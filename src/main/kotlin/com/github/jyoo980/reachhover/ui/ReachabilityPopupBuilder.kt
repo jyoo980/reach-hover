@@ -15,26 +15,25 @@ class ReachabilityPopupBuilder {
     // IntelliJ).
 
     fun constructPopupFor(element: PsiElement): JPanel {
+        // TODO: Use extension functions in PsiElement to make the proper calls here depending on
+        // type.
         // TODO: Eventually register custom actions using ReachabilityButton#activateAction.
         // TODO: Eventually register custom actions using ShowDocumentationButton#activateAction.
+        val reachabilityButton = createReachabilityButton(element)
+        val showDocumentationButton = ShowDocumentationButton().apply { setButtonText() }
         val panel = JPanel(GridLayout(2, 1))
-        val optReachabilityButton = createReachabilityButton(element)
-        val showDocumentationButton = ShowDocumentationButton().also { it.setButtonText() }
-        optReachabilityButton?.also { panel.add(it.ui) }
+        reachabilityButton?.also { panel.add(it.ui) }
         panel.add(showDocumentationButton.ui)
         return panel
     }
 
     private fun createReachabilityButton(element: PsiElement): ReachabilityButton? {
-        val optButton =
+        val reachabilityButton =
             if (element.isNonLiteralMethodArg()) {
                 ForwardReachabilityButton(element)
             } else if (element.isLocalVariableReference()) {
                 BackwardReachabilityButton(element)
             } else null
-        return optButton?.also {
-            it.setButtonText()
-            // TODO: call it.activateAction() eventually.
-        }
+        return reachabilityButton?.apply { setButtonText() }
     }
 }
