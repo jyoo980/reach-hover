@@ -19,7 +19,7 @@ object MouseHoverUtil {
      * @return the mouse event offset.
      */
     fun targetOffset(event: EditorMouseEvent): Int? {
-        return if (this.isHoverInValidArea(event)) {
+        return if (isHoverInValidArea(event)) {
             event.offset
         } else null
     }

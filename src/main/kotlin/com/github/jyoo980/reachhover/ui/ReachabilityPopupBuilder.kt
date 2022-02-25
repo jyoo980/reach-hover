@@ -17,12 +17,11 @@ class ReachabilityPopupBuilder {
         // type.
         // TODO: Eventually register custom actions using ReachabilityButton#activateAction.
         // TODO: Eventually register custom actions using ShowDocumentationButton#activateAction.
-        val panel = JPanel(GridLayout(2, 1))
-        val reachabilityButton = BackwardReachabilityButton(element).also { it.setButtonText() }
-        val showDocumentationButton = ShowDocumentationButton().also { it.setButtonText() }
-        return JPanel(GridLayout(2, 1)).also {
-            it.add(reachabilityButton.ui)
-            it.add(showDocumentationButton.ui)
+        val reachabilityButton = BackwardReachabilityButton(element).apply { setButtonText() }
+        val showDocumentationButton = ShowDocumentationButton().apply { setButtonText() }
+        return JPanel(GridLayout(2, 1)).apply {
+            add(reachabilityButton.ui)
+            add(showDocumentationButton.ui)
         }
     }
 }

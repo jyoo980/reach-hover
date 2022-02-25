@@ -16,10 +16,10 @@ sealed class ReachabilityButton(element: PsiElement) {
     // TODO: Either come up with a custom icon, or find a way to resize (QuestionDialog is 32x32, we
     // need 16x16).
     val ui: JButton =
-        JButton(AllIcons.General.QuestionDialog).also {
-            it.horizontalAlignment = SwingConstants.LEFT
-            it.isBorderPainted = false
-            it.isContentAreaFilled = false
+        JButton(AllIcons.General.QuestionDialog).apply {
+            horizontalAlignment = SwingConstants.LEFT
+            isBorderPainted = false
+            isContentAreaFilled = false
         }
 
     abstract fun setButtonText(optText: String? = null)
@@ -27,13 +27,13 @@ sealed class ReachabilityButton(element: PsiElement) {
     open fun activateAction(editor: Editor) {
         // TODO: stub behaviour, link this to actual reachability action later. Should be an
         // abstract fun once we're done.
-        this.ui.addActionListener {
+        ui.addActionListener {
             Desktop.getDesktop().browse(URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
         }
     }
 
-    protected fun optIdentifierName(): String? {
-        return (this.elementUnderCursor as? PsiIdentifier)?.text?.let {
+    protected fun identifierName(): String? {
+        return (elementUnderCursor as? PsiIdentifier)?.text?.let {
             "<span style=\"font-family:JetBrains Mono;\">$it</font></span>"
         }
     }
@@ -45,15 +45,15 @@ class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(eleme
         val textToSet =
             optText
                 ?: kotlin.run {
-                    val nameOfArgumentToInspect = this.optIdentifierName() ?: "this argument"
+                    val nameOfArgumentToInspect = identifierName() ?: "this argument"
                     val fullText = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
                     "<html>$fullText</html"
                 }
-        this.ui.text = textToSet
+        ui.text = textToSet
     }
 
     override fun activateAction(editor: Editor) {
-        this.ui.addActionListener {
+        ui.addActionListener {
             // TODO: wire this up.
         }
     }

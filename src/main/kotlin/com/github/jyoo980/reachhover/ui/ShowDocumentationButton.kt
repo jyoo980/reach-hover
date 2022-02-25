@@ -12,18 +12,18 @@ class ShowDocumentationButton {
     private val defaultButtonText: String = MyBundle.message("showDocumentation")
 
     val ui: JButton =
-        JButton(AllIcons.Toolwindows.Documentation).also {
-            it.horizontalAlignment = SwingConstants.LEFT
-            it.isBorderPainted = false
-            it.isContentAreaFilled = false
+        JButton(AllIcons.Toolwindows.Documentation).apply {
+            horizontalAlignment = SwingConstants.LEFT
+            isBorderPainted = false
+            isContentAreaFilled = false
         }
 
     fun setButtonText(optText: String? = null) {
-        this.ui.text = optText ?: this.defaultButtonText
+        ui.text = optText ?: defaultButtonText
     }
 
     fun activateAction() {
-        this.ui.addActionListener {
+        ui.addActionListener {
             // TODO: wire this up.
         }
     }
