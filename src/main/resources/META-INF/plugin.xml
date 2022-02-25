@@ -10,6 +10,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.jyoo980.reachhover.services.MyApplicationService"/>
         <projectService serviceImplementation="com.github.jyoo980.reachhover.services.MyProjectService"/>
+        <editorFactoryMouseMotionListener
+                implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
     </extensions>
 
     <applicationListeners>
