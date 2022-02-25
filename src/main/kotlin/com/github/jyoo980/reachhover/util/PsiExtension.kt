@@ -10,14 +10,9 @@ import com.intellij.psi.util.PsiTreeUtil
  * a.isNonLiteralMethodArg() -> true e.g., foo(a, 1), 1.isNonLiteralMethodArg() -> false
  */
 fun PsiElement.isNonLiteralMethodArg(): Boolean {
-    val optParentMethodCallExpr =
-        PsiTreeUtil.getParentOfType(this, PsiMethodCallExpression::class.java)
-    // Need to check if one of the element's parents is a method list. Otherwise, we get items like
-    // a.foo() being erroneously reported.
-    val optParentExprList = PsiTreeUtil.getParentOfType(this, PsiExpressionList::class.java)
-    return PsiTreeUtil.instanceOf(this, PsiIdentifier::class.java) &&
-        optParentMethodCallExpr != null &&
-        optParentExprList != null
+    PsiTreeUtil.getParentOfType(this, PsiMethodCallExpression::class.java) ?: return false
+    PsiTreeUtil.getParentOfType(this, PsiExpressionList::class.java) ?: return false
+    return PsiTreeUtil.instanceOf(this, PsiIdentifier::class.java)
 }
 
 /**
@@ -26,7 +21,5 @@ fun PsiElement.isNonLiteralMethodArg(): Boolean {
  * @return true iff the element is an instance of a local variable reference.
  */
 fun PsiElement.isLocalVariableReference(): Boolean {
-    val isParentLocalVar =
-        this.parent?.let { PsiTreeUtil.instanceOf(it, PsiLocalVariable::class.java) } ?: false
-    return isParentLocalVar && PsiTreeUtil.instanceOf(this, PsiIdentifier::class.java)
+    return (this is PsiIdentifier) && (this.parent is PsiLocalVariable)
 }

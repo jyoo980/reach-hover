@@ -38,7 +38,7 @@ object MouseHoverUtil {
                 element = it.findElementAt(offset - 1)
             }
             if (element is PsiWhiteSpace) {
-                element = it.findElementAt(element.textRange.startOffset - 1)
+                element = element.prevSibling
             }
             element
         }
