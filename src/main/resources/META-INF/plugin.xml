@@ -5,10 +5,13 @@
     <vendor>jyoo980</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.jyoo980.reachhover.services.MyApplicationService"/>
         <projectService serviceImplementation="com.github.jyoo980.reachhover.services.MyProjectService"/>
+        <editorFactoryMouseMotionListener
+                implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
     </extensions>
 
     <applicationListeners>
