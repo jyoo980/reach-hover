@@ -29,9 +29,9 @@ class ReachabilityPopupBuilder {
 
     private fun createReachabilityButton(element: PsiElement): ReachabilityButton? {
         val reachabilityButton =
-            if (element.isNonLiteralMethodArg()) {
+            if (element.isLocalVariableReference()) {
                 ForwardReachabilityButton(element)
-            } else if (element.isLocalVariableReference()) {
+            } else if (element.isNonLiteralMethodArg()) {
                 BackwardReachabilityButton(element)
             } else null
         return reachabilityButton?.apply { setButtonText() }
