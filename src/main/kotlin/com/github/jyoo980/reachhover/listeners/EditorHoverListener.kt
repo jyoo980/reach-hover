@@ -14,6 +14,7 @@ internal class EditorHoverListener : EditorMouseMotionListener {
         val project = e.editor.project ?: return
         val optElement = MouseHoverUtil.elementAtOffset(project, e.editor, offset)
         // TODO: 2022-02-17 Add check whether optElement is the item we're looking for
+        val elementUnderInspection = MouseHoverUtil.elementAtOffset(project, e.editor, offset)
         // (variable/method arg).
     }
 }

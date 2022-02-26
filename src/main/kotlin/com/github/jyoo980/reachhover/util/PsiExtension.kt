@@ -21,5 +21,5 @@ fun PsiElement.isNonLiteralMethodArg(): Boolean {
  * @return true iff the element is an instance of a local variable reference.
  */
 fun PsiElement.isLocalVariableReference(): Boolean {
-    return (this is PsiIdentifier) && (this.parent is PsiLocalVariable)
+    return (this is PsiIdentifier) && (parent is PsiLocalVariable)
 }
