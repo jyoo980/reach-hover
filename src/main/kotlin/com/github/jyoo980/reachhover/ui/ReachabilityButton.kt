@@ -5,13 +5,14 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
-import java.awt.Desktop
-import java.net.URI
+import com.intellij.slicer.SliceHandler
+import com.intellij.slicer.SliceManager
 import javax.swing.JButton
 import javax.swing.SwingConstants
 
 sealed class ReachabilityButton(element: PsiElement) {
 
+    protected open val dataflowFromHere = false
     private val elementUnderCursor = element
     // TODO: Either come up with a custom icon, or find a way to resize (QuestionDialog is 32x32, we
     // need 16x16).
@@ -24,11 +25,16 @@ sealed class ReachabilityButton(element: PsiElement) {
 
     abstract fun setButtonText(text: String? = null)
 
-    open fun activateAction(editor: Editor) {
-        // TODO: stub behaviour, link this to actual reachability action later. Should be an
-        // abstract fun once we're done.
-        ui.addActionListener {
-            Desktop.getDesktop().browse(URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
+    fun activateAction(editor: Editor) {
+        editor.project?.also { project ->
+            ui.addActionListener {
+                SliceManager.getInstance(project)
+                    .slice(
+                        elementUnderCursor,
+                        dataflowFromHere,
+                        SliceHandler.create(dataflowFromHere)
+                    )
+            }
         }
     }
 
@@ -41,7 +47,7 @@ sealed class ReachabilityButton(element: PsiElement) {
 
 class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
 
-    private val dataflowFromHere = false
+    override val dataflowFromHere = true
 
     override fun setButtonText(text: String?) {
         val textToSet =
@@ -53,17 +59,11 @@ class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(eleme
                 }
         ui.text = textToSet
     }
-
-    override fun activateAction(editor: Editor) {
-        ui.addActionListener {
-            // TODO: wire this up.
-        }
-    }
 }
 
 class ForwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
 
-    private val dataflowFromHere = true
+    override val dataflowFromHere = false
 
     override fun setButtonText(text: String?) {
         val textToSet =
@@ -74,11 +74,5 @@ class ForwardReachabilityButton(element: PsiElement) : ReachabilityButton(elemen
                     "<html>$fullText</html>"
                 }
         ui.text = textToSet
-    }
-
-    override fun activateAction(editor: Editor) {
-        ui.addActionListener {
-            // TODO: wire this up.
-        }
     }
 }

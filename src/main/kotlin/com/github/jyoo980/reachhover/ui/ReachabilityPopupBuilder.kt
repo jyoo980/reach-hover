@@ -21,7 +21,6 @@ class ReachabilityPopupBuilder {
             createReachabilityButton(element)?.apply {
                 setButtonText()
                 activateAction(editor)
-                // TODO: call ReachabilityButton#activateAction
             }
         val showDocumentationButton =
             ShowDocumentationButton().apply {
