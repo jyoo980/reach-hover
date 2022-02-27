@@ -17,14 +17,17 @@ internal class EditorHoverListener : EditorMouseMotionListener {
         ReachabilityInfoPopupManager()
 
     override fun mouseMoved(e: EditorMouseEvent) {
-        val offset = MouseHoverUtil.targetOffset(e) ?: return
-        val project = e.editor.project ?: return
-        val elementUnderInspection = MouseHoverUtil.elementAtOffset(project, e.editor, offset)
-        elementUnderInspection
-            ?.takeIf { it.isNonLiteralMethodArg() || it.isLocalVariableReference() }
-            ?.also {
-                val context = ReachabilityHoverContext(it, RelativePoint(e.mouseEvent), e.editor)
-                reachabilityPopupManager.showReachabilityPopupFor(context)
-            }
+        MouseHoverUtil.targetOffset(e)?.let { offset ->
+            val project = e.editor.project ?: return
+            val elementUnderInspection = MouseHoverUtil.elementAtOffset(project, e.editor, offset)
+            elementUnderInspection
+                ?.takeIf { it.isNonLiteralMethodArg() || it.isLocalVariableReference() }
+                ?.let {
+                    val context =
+                        ReachabilityHoverContext(it, RelativePoint(e.mouseEvent), e.editor)
+                    reachabilityPopupManager.showReachabilityPopupFor(context)
+                }
+        }
+            ?: reachabilityPopupManager.resetPopupState()
     }
 }

@@ -32,6 +32,15 @@ class ReachabilityInfoPopupManager {
         popup.show(popupContext.location)
     }
 
+    fun resetPopupState() {
+        clearPopupContext()
+        closePopup()
+    }
+
+    private fun clearPopupContext() {
+        currentContext = null
+    }
+
     private fun closePopup() {
         currentPopupRef?.get()?.also { it.cancel() }
         currentPopupRef?.clear()
