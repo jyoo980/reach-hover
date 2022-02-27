@@ -20,12 +20,9 @@ class ReachabilityInfoPopupManager {
                 currentContext?.elementToInspect?.isEquivalentTo(it.elementToInspect) ?: false
             }
                 ?: return
-        currentPopupRef?.get()?.cancel()
-        currentPopupRef?.clear()
-        // TODO: Really only want to invoke this when the PsiElement is a local variable or a method
-        // argument.
+        closePopup()
         val popupContext = currentContext!!
-        val popupUI = reachabilityPopupBuilder.constructPopupFor(popupContext.elementToInspect)
+        val popupUI = reachabilityPopupBuilder.constructPopupFor(popupContext)
         val popup =
             JBPopupFactory.getInstance()
                 .createComponentPopupBuilder(popupUI, null)
@@ -33,5 +30,10 @@ class ReachabilityInfoPopupManager {
                 .createPopup()
         currentPopupRef = WeakReference(popup)
         popup.show(popupContext.location)
+    }
+
+    private fun closePopup() {
+        currentPopupRef?.get()?.also { it.cancel() }
+        currentPopupRef?.clear()
     }
 }

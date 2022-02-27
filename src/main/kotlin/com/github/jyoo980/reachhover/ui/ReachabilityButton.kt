@@ -22,7 +22,7 @@ sealed class ReachabilityButton(element: PsiElement) {
             isContentAreaFilled = false
         }
 
-    abstract fun setButtonText(optText: String? = null)
+    abstract fun setButtonText(text: String? = null)
 
     open fun activateAction(editor: Editor) {
         // TODO: stub behaviour, link this to actual reachability action later. Should be an
@@ -41,13 +41,37 @@ sealed class ReachabilityButton(element: PsiElement) {
 
 class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
 
-    override fun setButtonText(optText: String?) {
+    private val dataflowFromHere = false
+
+    override fun setButtonText(text: String?) {
         val textToSet =
-            optText
-                ?: kotlin.run {
+            text
+                ?: run {
                     val nameOfArgumentToInspect = identifierName() ?: "this argument"
                     val fullText = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
                     "<html>$fullText</html"
+                }
+        ui.text = textToSet
+    }
+
+    override fun activateAction(editor: Editor) {
+        ui.addActionListener {
+            // TODO: wire this up.
+        }
+    }
+}
+
+class ForwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
+
+    private val dataflowFromHere = true
+
+    override fun setButtonText(text: String?) {
+        val textToSet =
+            text
+                ?: run {
+                    val nameOfArgumentToInspect = identifierName() ?: "this value"
+                    val fullText = MyBundle.message("modifiedQuestion", nameOfArgumentToInspect)
+                    "<html>$fullText</html>"
                 }
         ui.text = textToSet
     }

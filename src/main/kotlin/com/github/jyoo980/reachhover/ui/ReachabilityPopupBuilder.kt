@@ -1,5 +1,8 @@
 package com.github.jyoo980.reachhover.ui
 
+import com.github.jyoo980.reachhover.model.ReachabilityHoverContext
+import com.github.jyoo980.reachhover.util.isLocalVariableReference
+import com.github.jyoo980.reachhover.util.isNonLiteralMethodArg
 import com.intellij.psi.PsiElement
 import java.awt.GridLayout
 import javax.swing.JPanel
@@ -12,16 +15,30 @@ class ReachabilityPopupBuilder {
     // The second row will be an option to show types/documentation (the unmodified behaviour of
     // IntelliJ).
 
-    fun constructPopupFor(element: PsiElement): JPanel {
-        // TODO: Use extension functions in PsiElement to make the proper calls here depending on
-        // type.
-        // TODO: Eventually register custom actions using ReachabilityButton#activateAction.
-        // TODO: Eventually register custom actions using ShowDocumentationButton#activateAction.
-        val reachabilityButton = BackwardReachabilityButton(element).apply { setButtonText() }
-        val showDocumentationButton = ShowDocumentationButton().apply { setButtonText() }
+    fun constructPopupFor(reachabilityContext: ReachabilityHoverContext): JPanel {
+        val (element, _, editor) = reachabilityContext
+        val reachabilityButton =
+            createReachabilityButton(element)?.apply {
+                setButtonText()
+                activateAction(editor)
+                // TODO: call ReachabilityButton#activateAction
+            }
+        val showDocumentationButton =
+            ShowDocumentationButton().apply {
+                setButtonText()
+                activateAction()
+            }
         return JPanel(GridLayout(2, 1)).apply {
-            add(reachabilityButton.ui)
+            reachabilityButton?.let { this.add(it.ui) }
             add(showDocumentationButton.ui)
         }
+    }
+
+    private fun createReachabilityButton(element: PsiElement): ReachabilityButton? {
+        return if (element.isLocalVariableReference()) {
+            ForwardReachabilityButton(element)
+        } else if (element.isNonLiteralMethodArg()) {
+            BackwardReachabilityButton(element)
+        } else null
     }
 }
