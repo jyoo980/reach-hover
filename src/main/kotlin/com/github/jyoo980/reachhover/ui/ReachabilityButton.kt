@@ -28,12 +28,14 @@ sealed class ReachabilityButton(element: PsiElement) {
     fun activateAction(editor: Editor) {
         editor.project?.also { project ->
             ui.addActionListener {
-                SliceManager.getInstance(project)
-                    .slice(
-                        elementUnderCursor,
-                        dataflowFromHere,
-                        SliceHandler.create(dataflowFromHere)
-                    )
+                // TODO: this is currently tied to the default action of opening the tool window at
+                // the bottom.
+                val handler = SliceHandler.create(!dataflowFromHere)
+                handler.getExpressionAtCaret(editor, elementUnderCursor.containingFile)?.let {
+                    exprToAnalyze ->
+                    SliceManager.getInstance(project)
+                        .slice(exprToAnalyze, !dataflowFromHere, handler)
+                }
             }
         }
     }
@@ -47,7 +49,7 @@ sealed class ReachabilityButton(element: PsiElement) {
 
 class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
 
-    override val dataflowFromHere = true
+    override val dataflowFromHere = false
 
     override fun setButtonText(text: String?) {
         val textToSet =
@@ -63,7 +65,7 @@ class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(eleme
 
 class ForwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
 
-    override val dataflowFromHere = false
+    override val dataflowFromHere = true
 
     override fun setButtonText(text: String?) {
         val textToSet =
