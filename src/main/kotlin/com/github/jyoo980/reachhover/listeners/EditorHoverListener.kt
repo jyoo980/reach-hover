@@ -36,13 +36,14 @@ internal class EditorHoverListener : EditorMouseMotionListener {
                         ReachabilityHoverContext(it, RelativePoint(e.mouseEvent), e.editor)
                     reachabilityPopupManager.showReachabilityPopupFor(context)
                 }
-        } ?: reachabilityPopupManager.resetPopupState()
+        }
+            ?: reachabilityPopupManager.resetPopupState()
     }
 
     private fun actionDelayTime(startTimeMs: Long): Long =
         max(
             0,
             EditorSettingsExternalizable.getInstance().tooltipsDelay -
-                    (System.currentTimeMillis() - startTimeMs)
+                (System.currentTimeMillis() - startTimeMs)
         )
 }
