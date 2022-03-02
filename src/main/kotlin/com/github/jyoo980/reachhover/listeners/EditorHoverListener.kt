@@ -32,17 +32,17 @@ internal class EditorHoverListener : EditorMouseMotionListener {
             elementToAnalyze
                 ?.takeIf { it.isNonLiteralMethodArg() || it.isLocalVariableReference() }
                 ?.let {
-                    val context = ReachabilityHoverContext(it, RelativePoint(e.mouseEvent))
+                    val context =
+                        ReachabilityHoverContext(it, RelativePoint(e.mouseEvent), e.editor)
                     reachabilityPopupManager.showReachabilityPopupFor(context)
                 }
-        }
+        } ?: reachabilityPopupManager.resetPopupState()
     }
 
-    private fun actionDelayTime(startTimeMs: Long): Long {
-        return max(
+    private fun actionDelayTime(startTimeMs: Long): Long =
+        max(
             0,
             EditorSettingsExternalizable.getInstance().tooltipsDelay -
-                (System.currentTimeMillis() - startTimeMs)
+                    (System.currentTimeMillis() - startTimeMs)
         )
-    }
 }

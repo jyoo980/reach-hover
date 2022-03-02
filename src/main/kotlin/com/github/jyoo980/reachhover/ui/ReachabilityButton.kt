@@ -5,13 +5,14 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
-import java.awt.Desktop
-import java.net.URI
+import com.intellij.slicer.SliceHandler
+import com.intellij.slicer.SliceManager
 import javax.swing.JButton
 import javax.swing.SwingConstants
 
 sealed class ReachabilityButton(element: PsiElement) {
 
+    protected open val dataflowFromHere = false
     private val elementUnderCursor = element
     // TODO: Either come up with a custom icon, or find a way to resize (QuestionDialog is 32x32, we
     // need 16x16).
@@ -22,13 +23,20 @@ sealed class ReachabilityButton(element: PsiElement) {
             isContentAreaFilled = false
         }
 
-    abstract fun setButtonText(optText: String? = null)
+    abstract fun setButtonText(text: String? = null)
 
-    open fun activateAction(editor: Editor) {
-        // TODO: stub behaviour, link this to actual reachability action later. Should be an
-        // abstract fun once we're done.
-        ui.addActionListener {
-            Desktop.getDesktop().browse(URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
+    fun activateAction(editor: Editor) {
+        editor.project?.also { project ->
+            ui.addActionListener {
+                // TODO: this is currently tied to the default action of opening the tool window at
+                // the bottom.
+                val handler = SliceHandler.create(!dataflowFromHere)
+                handler.getExpressionAtCaret(editor, elementUnderCursor.containingFile)?.let {
+                    exprToAnalyze ->
+                    SliceManager.getInstance(project)
+                        .slice(exprToAnalyze, !dataflowFromHere, handler)
+                }
+            }
         }
     }
 
@@ -41,20 +49,32 @@ sealed class ReachabilityButton(element: PsiElement) {
 
 class BackwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
 
-    override fun setButtonText(optText: String?) {
+    override val dataflowFromHere = false
+
+    override fun setButtonText(text: String?) {
         val textToSet =
-            optText
-                ?: kotlin.run {
+            text
+                ?: run {
                     val nameOfArgumentToInspect = identifierName() ?: "this argument"
                     val fullText = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
                     "<html>$fullText</html"
                 }
         ui.text = textToSet
     }
+}
 
-    override fun activateAction(editor: Editor) {
-        ui.addActionListener {
-            // TODO: wire this up.
-        }
+class ForwardReachabilityButton(element: PsiElement) : ReachabilityButton(element) {
+
+    override val dataflowFromHere = true
+
+    override fun setButtonText(text: String?) {
+        val textToSet =
+            text
+                ?: run {
+                    val nameOfArgumentToInspect = identifierName() ?: "this value"
+                    val fullText = MyBundle.message("modifiedQuestion", nameOfArgumentToInspect)
+                    "<html>$fullText</html>"
+                }
+        ui.text = textToSet
     }
 }
