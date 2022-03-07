@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.slicer.*
 import java.util.regex.Pattern
 
-object SliceDispatchService: TreeBuilder {
+object SliceDispatchService : TreeBuilder {
 
     fun expressionContainingElement(
         elementAtHover: PsiElement,

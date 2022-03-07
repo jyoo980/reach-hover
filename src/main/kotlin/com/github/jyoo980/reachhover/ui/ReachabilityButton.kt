@@ -30,17 +30,19 @@ sealed class ReachabilityButton(element: PsiElement) {
         editor.project?.also { project ->
             ui.addActionListener {
                 val handler = SliceHandler.create(!dataflowFromHere)
-                val expressionToAnalyze = SliceDispatchService.expressionContainingElement(
+                val expressionToAnalyze =
+                    SliceDispatchService.expressionContainingElement(
                         elementUnderCursor,
                         !dataflowFromHere
                     )
-                    expressionToAnalyze?.let {
-                        // TODO: open a new window here right next to the popup
-                        val sliceRoot = SliceDispatchService.sliceRootUsage(it, project, dataflowFromHere)
-                        val tree = SliceDispatchService.treeFrom(sliceRoot)
-                        SliceDispatchService.printGraph(tree)
-                        SliceManager.getInstance(project).slice(it, dataflowFromHere, handler)
-                    }
+                expressionToAnalyze?.let {
+                    // TODO: open a new window here right next to the popup
+                    val sliceRoot =
+                        SliceDispatchService.sliceRootUsage(it, project, dataflowFromHere)
+                    val tree = SliceDispatchService.treeFrom(sliceRoot)
+                    SliceDispatchService.printGraph(tree)
+                    SliceManager.getInstance(project).slice(it, dataflowFromHere, handler)
+                }
             }
         }
     }
