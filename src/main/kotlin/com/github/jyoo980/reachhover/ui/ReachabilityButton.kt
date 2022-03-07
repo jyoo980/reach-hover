@@ -1,6 +1,7 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.github.jyoo980.reachhover.MyBundle
+import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
@@ -31,11 +32,13 @@ sealed class ReachabilityButton(element: PsiElement) {
                 // TODO: this is currently tied to the default action of opening the tool window at
                 // the bottom.
                 val handler = SliceHandler.create(!dataflowFromHere)
-                handler.getExpressionAtCaret(editor, elementUnderCursor.containingFile)?.let {
-                    exprToAnalyze ->
-                    SliceManager.getInstance(project)
-                        .slice(exprToAnalyze, !dataflowFromHere, handler)
-                }
+                SliceDispatchService.expressionContainingElement(
+                        elementUnderCursor,
+                        !dataflowFromHere
+                    )
+                    ?.let {
+                        SliceManager.getInstance(project).slice(it, !dataflowFromHere, handler)
+                    }
             }
         }
     }
