@@ -29,15 +29,17 @@ sealed class ReachabilityButton(element: PsiElement) {
     fun activateAction(editor: Editor) {
         editor.project?.also { project ->
             ui.addActionListener {
-                // TODO: this is currently tied to the default action of opening the tool window at
-                // the bottom.
                 val handler = SliceHandler.create(!dataflowFromHere)
-                SliceDispatchService.expressionContainingElement(
+                val expressionToAnalyze = SliceDispatchService.expressionContainingElement(
                         elementUnderCursor,
                         !dataflowFromHere
                     )
-                    ?.let {
-                        SliceManager.getInstance(project).slice(it, !dataflowFromHere, handler)
+                    expressionToAnalyze?.let {
+                        // TODO: open a new window here right next to the popup
+                        val sliceRoot = SliceDispatchService.sliceRootUsage(it, project, dataflowFromHere)
+                        val tree = SliceDispatchService.treeFrom(sliceRoot)
+                        SliceDispatchService.printGraph(tree)
+                        SliceManager.getInstance(project).slice(it, dataflowFromHere, handler)
                     }
             }
         }
