@@ -1,12 +1,29 @@
 package com.github.jyoo980.reachhover.model
 
-data class Tree<A>(val value: A) {
-    var parent: Tree<A>? = null
-    // TODO: think about whether I can make this a `val` not a `var`.
-    var children: MutableList<Tree<A>> = mutableListOf()
+sealed class Tree<out A>
 
-    fun addChild(child: Tree<A>) {
-        children.add(child)
-        child.parent = this
+object Empty : Tree<Nothing>() {
+    override fun toString(): String {
+        return "Empty"
     }
 }
+
+data class Node<A>(val value: A, val children: MutableList<Tree<A>> = mutableListOf()) : Tree<A>() {
+
+    fun addChild(child: Tree<A>) {
+        this.children.add(child)
+    }
+
+    override fun toString(): String {
+        return "Node($value, children)"
+    }
+}
+
+fun <A, B> Tree<A>.map(f: (A) -> B): Tree<B> =
+    when (this) {
+        Empty -> Empty
+        is Node<A> -> {
+            val transformedChildren = children.map { it.map(f) } as MutableList
+            Node(f(value), transformedChildren)
+        }
+    }

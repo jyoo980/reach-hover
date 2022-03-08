@@ -35,10 +35,10 @@ sealed class ReachabilityButton(element: PsiElement) {
                         elementUnderCursor,
                         !dataflowFromHere
                     )
-                expressionToAnalyze?.let {
+                expressionToAnalyze?.let { expr ->
                     // TODO: open a new window here right next to the popup
                     val sliceRoot =
-                        SliceDispatchService.sliceRootUsage(it, project, dataflowFromHere)
+                        SliceDispatchService.sliceRootUsage(expr, project, dataflowFromHere)
                     val tree = SliceDispatchService.treeFrom(sliceRoot)
                     SliceDispatchService.printGraph(tree)
                     SliceManager.getInstance(project).slice(it, dataflowFromHere, handler)
