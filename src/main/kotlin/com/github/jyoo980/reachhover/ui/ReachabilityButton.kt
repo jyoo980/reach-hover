@@ -2,6 +2,7 @@ package com.github.jyoo980.reachhover.ui
 
 import com.github.jyoo980.reachhover.MyBundle
 import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
+import com.github.jyoo980.reachhover.services.tree.TreeBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
@@ -39,9 +40,8 @@ sealed class ReachabilityButton(element: PsiElement) {
                     // TODO: open a new window here right next to the popup
                     val sliceRoot =
                         SliceDispatchService.sliceRootUsage(expr, project, dataflowFromHere)
-                    val tree = SliceDispatchService.treeFrom(sliceRoot)
-                    SliceDispatchService.printGraph(tree)
-                    SliceManager.getInstance(project).slice(it, dataflowFromHere, handler)
+                    val tree = TreeBuilder.treeFrom(sliceRoot)
+                    SliceManager.getInstance(project).slice(expr, dataflowFromHere, handler)
                 }
             }
         }
