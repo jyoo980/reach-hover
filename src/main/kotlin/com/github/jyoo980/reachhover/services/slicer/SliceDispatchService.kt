@@ -1,6 +1,5 @@
 package com.github.jyoo980.reachhover.services.slicer
 
-import com.github.jyoo980.reachhover.services.TreeBuilder
 import com.intellij.analysis.AnalysisScope
 import com.intellij.lang.LangBundle
 import com.intellij.openapi.project.Project
@@ -9,7 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.slicer.*
 import java.util.regex.Pattern
 
-object SliceDispatchService : TreeBuilder {
+object SliceDispatchService {
 
     fun expressionContainingElement(
         elementAtHover: PsiElement,
