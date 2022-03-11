@@ -3,12 +3,12 @@ package com.github.jyoo980.reachhover.ui
 import com.github.jyoo980.reachhover.MyBundle
 import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
 import com.github.jyoo980.reachhover.services.tree.TreeBuilder
-import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
 import com.intellij.slicer.SliceHandler
 import com.intellij.slicer.SliceManager
+import icons.IconManager
 import javax.swing.JButton
 import javax.swing.SwingConstants
 
@@ -19,7 +19,7 @@ sealed class ReachabilityButton(element: PsiElement) {
     // TODO: Either come up with a custom icon, or find a way to resize (QuestionDialog is 32x32, we
     // need 16x16).
     val ui: JButton =
-        JButton(AllIcons.General.QuestionDialog).apply {
+        JButton(IconManager.reachabilityIcon).apply {
             horizontalAlignment = SwingConstants.LEFT
             isBorderPainted = false
             isContentAreaFilled = false

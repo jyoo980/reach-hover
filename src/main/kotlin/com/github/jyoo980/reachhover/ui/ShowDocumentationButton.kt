@@ -1,7 +1,7 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.github.jyoo980.reachhover.MyBundle
-import com.intellij.icons.AllIcons
+import icons.IconManager
 import javax.swing.JButton
 import javax.swing.SwingConstants
 
@@ -12,7 +12,7 @@ class ShowDocumentationButton {
     private val defaultButtonText: String = MyBundle.message("showDocumentation")
 
     val ui: JButton =
-        JButton(AllIcons.Toolwindows.Documentation).apply {
+        JButton(IconManager.documentationIcon).apply {
             horizontalAlignment = SwingConstants.LEFT
             isBorderPainted = false
             isContentAreaFilled = false
