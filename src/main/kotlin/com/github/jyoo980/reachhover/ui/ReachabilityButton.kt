@@ -1,7 +1,10 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.github.jyoo980.reachhover.MyBundle
+import com.github.jyoo980.reachhover.actions.ShowReachabilityElementsAction
+import com.github.jyoo980.reachhover.model.ReachabilityContext
 import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
+import com.github.jyoo980.reachhover.services.tree.SliceMetadataTransformer
 import com.github.jyoo980.reachhover.services.tree.TreeBuilder
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
@@ -30,10 +33,13 @@ sealed class ReachabilityButton(
                 val expressionToAnalyze =
                     SliceDispatchService.expressionContainingElement(element, !dataflowFromHere)
                 expressionToAnalyze?.let { expr ->
-                    // TODO: open a new window here right next to the popup
                     val sliceRoot =
                         SliceDispatchService.sliceRootUsage(expr, project, dataflowFromHere)
                     val tree = TreeBuilder.treeFrom(sliceRoot)
+                    // TODO(jyoo): refactor this, SliceTransformer does NOT belong here.
+                    val reachabilityContext =
+                        ReachabilityContext(SliceMetadataTransformer().transform(tree))
+                    ShowReachabilityElementsAction().performForContext(reachabilityContext)
                 }
             }
         }
