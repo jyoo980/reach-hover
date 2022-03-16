@@ -38,7 +38,11 @@ sealed class ReachabilityButton(
                     val tree = TreeBuilder.treeFrom(sliceRoot)
                     // TODO(jyoo): refactor this, SliceTransformer does NOT belong here.
                     val reachabilityContext =
-                        ReachabilityContext(SliceMetadataTransformer().transform(tree))
+                        ReachabilityContext(
+                            editor,
+                            expr,
+                            SliceMetadataTransformer().transform(tree)
+                        )
                     ShowReachabilityElementsAction().performForContext(reachabilityContext)
                 }
             }
