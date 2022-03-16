@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 // TODO: unsure if is needed yet, come back later and check.
-class ReachabilityElementViewSessionFactory: ImplementationViewSessionFactory {
+class ReachabilityElementViewSessionFactory : ImplementationViewSessionFactory {
     override fun createSession(
         dataContext: DataContext,
         project: Project,
