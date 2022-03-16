@@ -1,3 +1,6 @@
 package com.github.jyoo980.reachhover.model
 
-data class ReachabilityContext(val tree: Tree<SliceMetadata>)
+import com.intellij.openapi.editor.Editor
+import com.intellij.psi.PsiElement
+
+data class ReachabilityContext(val editor: Editor, val element: PsiElement, val tree: Tree<SliceMetadata>)

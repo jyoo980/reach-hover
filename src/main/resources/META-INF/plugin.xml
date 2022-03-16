@@ -12,6 +12,8 @@
         <projectService serviceImplementation="com.github.jyoo980.reachhover.services.MyProjectService"/>
         <editorFactoryMouseMotionListener
                 implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
+        <implementationViewSessionFactory implementation="com.github.jyoo980.reachhover.codeinsight.ReachabilityElementViewSessionFactory"/>
+
     </extensions>
 
     <applicationListeners>

@@ -1,7 +1,6 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.intellij.codeInsight.hint.ElementLocationUtil
-import com.intellij.codeInsight.hint.ImplementationViewComponent
 import com.intellij.codeInsight.hint.ImplementationViewElement
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
@@ -26,7 +25,14 @@ class ReachabilityViewElement(private val element: PsiElement) : ImplementationV
 
     override val containingFile: VirtualFile? = element.containingFile?.originalFile?.virtualFile
 
-    override val text: String? = ImplementationViewComponent.getNewText(element)
+    override val text: String?
+        get() {
+            // TODO: fix me
+            // This throws a NPE given elements of type `PsiDirectory`.
+            // Important, since this is what renders the text on the reachability view windows.
+            // return ImplementationViewComponent.getNewText(element)
+            return "FooBarBaz"
+        }
 
     override val presentableText: String
         get() {

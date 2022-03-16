@@ -14,3 +14,12 @@ fun <A, B> Tree<A>.map(f: (A) -> B): Tree<B> =
             Node(f(value), mappedChildren)
         }
     }
+
+fun <A> Tree<A>.flatten(): List<A> =
+    when (this) {
+        Empty -> listOf()
+        is Node<A> -> {
+            val childList = children.flatMap { it.flatten() }
+            listOf(value) + childList
+        }
+    }
