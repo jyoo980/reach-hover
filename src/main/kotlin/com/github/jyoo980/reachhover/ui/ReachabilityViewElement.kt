@@ -1,6 +1,7 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.intellij.codeInsight.hint.ElementLocationUtil
+import com.intellij.codeInsight.hint.ImplementationViewComponent
 import com.intellij.codeInsight.hint.ImplementationViewElement
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
@@ -9,6 +10,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiBinaryFile
+import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiNamedElement
@@ -16,6 +18,8 @@ import com.intellij.psi.util.PsiTreeUtil
 import javax.swing.Icon
 
 class ReachabilityViewElement(private val element: PsiElement) : ImplementationViewElement() {
+
+    private val elementFallbackText = "Failed to render element"
 
     override val project: Project = element.project
 
@@ -27,11 +31,15 @@ class ReachabilityViewElement(private val element: PsiElement) : ImplementationV
 
     override val text: String?
         get() {
-            // TODO: fix me
-            // This throws a NPE given elements of type `PsiDirectory`.
-            // Important, since this is what renders the text on the reachability view windows.
-            // return ImplementationViewComponent.getNewText(element)
-            return "FooBarBaz"
+            val elementText =
+                element.takeUnless { it is PsiDirectory }?.let {
+                    // TODO: Will need to implement a new function that extracts "view" of code. See
+                    // below.
+                    // https://github.com/JetBrains/intellij-community/blob/6eee304b461d1f3c9745d15a76de86e4bbf5c332/platform/lang-impl/src/com/intellij/codeInsight/hint/ImplementationViewComponent.java#L477
+                    ImplementationViewComponent.getNewText(it)
+                }
+                    ?: elementFallbackText
+            return elementText.trimStart()
         }
 
     override val presentableText: String
