@@ -8,16 +8,10 @@
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.jyoo980.reachhover.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.jyoo980.reachhover.services.MyProjectService"/>
         <editorFactoryMouseMotionListener
                 implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
         <implementationViewSessionFactory implementation="com.github.jyoo980.reachhover.codeinsight.ReachabilityElementViewSessionFactory"/>
 
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.jyoo980.reachhover.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
 </idea-plugin>
