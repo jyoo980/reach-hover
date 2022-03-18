@@ -2,28 +2,24 @@ package com.github.jyoo980.reachhover.model
 
 sealed class Tree<out A>
 
-object Empty : Tree<Nothing>() {
-    override fun toString(): String {
-        return "Empty"
-    }
-}
+object Empty : Tree<Nothing>()
 
-data class Node<A>(val value: A, val children: MutableList<Tree<A>> = mutableListOf()) : Tree<A>() {
-
-    fun addChild(child: Tree<A>) {
-        this.children.add(child)
-    }
-
-    override fun toString(): String {
-        return "Node($value, children)"
-    }
-}
+data class Node<A>(val value: A, val children: List<Tree<A>>) : Tree<A>()
 
 fun <A, B> Tree<A>.map(f: (A) -> B): Tree<B> =
     when (this) {
         Empty -> Empty
         is Node<A> -> {
-            val transformedChildren = children.map { it.map(f) } as MutableList
-            Node(f(value), transformedChildren)
+            val mappedChildren = children.map { it.map(f) }
+            Node(f(value), mappedChildren)
+        }
+    }
+
+fun <A> Tree<A>.flatten(): List<A> =
+    when (this) {
+        Empty -> listOf()
+        is Node<A> -> {
+            val childList = children.flatMap { it.flatten() }
+            listOf(value) + childList
         }
     }

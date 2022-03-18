@@ -10,6 +10,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <editorFactoryMouseMotionListener
                 implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
+        <implementationViewSessionFactory implementation="com.github.jyoo980.reachhover.codeinsight.ReachabilityElementViewSessionFactory"/>
+
     </extensions>
 
 </idea-plugin>
