@@ -46,7 +46,6 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.usages.UsageView
 import com.intellij.util.DocumentUtil
 import com.intellij.util.IconUtil
-import com.intellij.util.PairFunction
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import java.awt.BorderLayout
@@ -62,7 +61,6 @@ import javax.swing.*
 import kotlin.jvm.Volatile
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.NonNls
-import org.jetbrains.annotations.TestOnly
 
 class ReachabilityViewComponent(
     elements: Collection<ImplementationViewElement>,
@@ -72,9 +70,7 @@ class ReachabilityViewComponent(
     private val factory: EditorFactory
     private val project: Project?
     var elements: Array<ImplementationViewElement>? = null
-        private set
     var index = 0
-        private set
     private var myEditor: EditorEx
 
     @Volatile private var myEditorReleased = false
@@ -116,12 +112,10 @@ class ReachabilityViewComponent(
         add(viewingPanel, BorderLayout.CENTER)
         myToolbar = createToolbar(openUsageView)
         preferredSize = JBUI.size(600, 400)
-        update(elements) {
-            psiElements: Array<ImplementationViewElement>,
-            fileDescriptors: List<FileDescriptor?> ->
+        update(elements) { psiElements, fileDescriptors ->
             if (psiElements.size == 0) return@update false
             this.elements = psiElements
-            this.index = if (index < elements.size) index else 0
+            this.index = index.takeIf { it < elements.size } ?: 0
             val virtualFile: VirtualFile? = elements.toList()[this.index].containingFile
             tuneEditor(virtualFile)
             val toolbarPanel = JPanel(GridBagLayout())
@@ -243,8 +237,8 @@ class ReachabilityViewComponent(
     }
 
     private fun tuneEditor(virtualFile: VirtualFile?) {
-        if (virtualFile != null) {
-            myEditor.highlighter = HighlighterFactory.createHighlighter(project, virtualFile)
+        virtualFile?.let {
+            myEditor.highlighter = HighlighterFactory.createHighlighter(project, it)
         }
     }
 
@@ -253,9 +247,7 @@ class ReachabilityViewComponent(
             EditorColorsManager.getInstance()
                 .globalScheme
                 .getColor(EditorColors.DOCUMENTATION_COLOR)
-        if (color != null) {
-            myEditor.backgroundColor = color
-        }
+        color?.let { myEditor.backgroundColor = it }
         val settings = myEditor.settings
         settings.additionalLinesCount = 1
         settings.additionalColumnsCount = 1
@@ -269,23 +261,13 @@ class ReachabilityViewComponent(
     }
 
     private fun updateRenderer(project: Project?) {
-        fileChooserComboBox!!.renderer = createRenderer(project)
+        fileChooserComboBox?.renderer = createRenderer(project)
     }
 
-    @get:TestOnly
-    val visibleFiles: Array<String?>
-        get() {
-            val model = fileChooserComboBox!!.model
-            val result = arrayOfNulls<String>(model.size)
-            for (i in 0 until model.size) {
-                val o = model.getElementAt(i)
-                result[i] = o!!.myElement.presentableText
-            }
-            return result
-        }
-
-    val preferredFocusableComponent: JComponent?
-        get() = if (elements!!.size > 1) fileChooserComboBox else myEditor.contentComponent
+    val preferredFocusableComponent: JComponent
+        get() =
+            elements?.takeIf { it.size > 1 }?.let { fileChooserComboBox }
+                ?: myEditor.contentComponent
 
     private fun updateControls() {
         updateCombo()
@@ -306,8 +288,8 @@ class ReachabilityViewComponent(
         val vFile = foundElement.containingFile ?: return
         for (documentFactory in ImplementationViewDocumentFactory.EP_NAME.extensions) {
             val document = documentFactory.createDocument(foundElement)
-            if (document != null) {
-                replaceEditor(project, vFile, documentFactory, document)
+            document?.let {
+                replaceEditor(project, vFile, documentFactory, it)
                 return
             }
         }
@@ -319,9 +301,9 @@ class ReachabilityViewComponent(
                 break
             } else if (provider.accept(project, vFile)) {
                 myCurrentNonTextEditorProvider = provider
-                myNonTextEditor = myCurrentNonTextEditorProvider!!.createEditor(project, vFile)
+                myNonTextEditor = myCurrentNonTextEditorProvider?.createEditor(project, vFile)
                 myBinaryPanel.removeAll()
-                myBinaryPanel.add(myNonTextEditor!!.component)
+                myNonTextEditor?.let { myBinaryPanel.add(it.component) }
                 myBinarySwitch.show(viewingPanel, BINARY_PAGE_KEY)
                 break
             }
@@ -345,27 +327,27 @@ class ReachabilityViewComponent(
     }
 
     private fun disposeNonTextEditor() {
-        if (myNonTextEditor != null) {
-            myCurrentNonTextEditorProvider!!.disposeEditor(myNonTextEditor!!)
+        myNonTextEditor?.let {
+            myCurrentNonTextEditorProvider?.disposeEditor(it)
             myNonTextEditor = null
             myCurrentNonTextEditorProvider = null
         }
     }
 
-    private fun updateTextElement(elt: ImplementationViewElement) {
-        val newText = elt.text
+    private fun updateTextElement(viewElement: ImplementationViewElement) {
+        val newText = viewElement.text
         if (newText == null || Comparing.strEqual(newText, myEditor.document.text)) return
         DocumentUtil.writeInRunUndoTransparentAction {
-            val fragmentDoc: Document = myEditor.document
+            val fragmentDoc = myEditor.document
             fragmentDoc.setReadOnly(false)
             fragmentDoc.replaceString(0, fragmentDoc.textLength, newText)
             fragmentDoc.setReadOnly(true)
-            val element = elt.elementForShowUsages
+            val element = viewElement.elementForShowUsages
             val file = element?.containingFile
-            myEditor.settings.setTabSize(
-                if (file != null) CodeStyle.getIndentOptions(file).TAB_SIZE
-                else CodeStyle.getSettings(elt.project).getTabSize(null)
-            )
+            val tabSize =
+                file?.let { CodeStyle.getIndentOptions(it).TAB_SIZE }
+                    ?: CodeStyle.getSettings(viewElement.project).getTabSize(null)
+            myEditor.settings.setTabSize(tabSize)
             myEditor.caretModel.moveToOffset(0)
             myEditor.scrollingModel.scrollToCaret(ScrollType.RELATIVE)
         }
@@ -384,7 +366,7 @@ class ReachabilityViewComponent(
         openUsageView: Consumer<ImplementationViewComponent>?
     ): ActionToolbar {
         val group = DefaultActionGroup()
-        val back: BackAction = BackAction()
+        val back = BackAction()
         back.registerCustomShortcutSet(
             CustomShortcutSet(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0)),
             this
@@ -412,7 +394,7 @@ class ReachabilityViewComponent(
                 }
             }
         )
-        val forward: ForwardAction = ForwardAction()
+        val forward = ForwardAction()
         forward.registerCustomShortcutSet(
             CustomShortcutSet(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0)),
             this
@@ -440,7 +422,7 @@ class ReachabilityViewComponent(
         return FindUtil.showInUsageView(null, collectElementsForShowUsages(), myTitle!!, project!!)
     }
 
-    private inner class BackAction internal constructor() :
+    private inner class BackAction :
         AnAction(
             CodeInsightBundle.messagePointer("quick.definition.back"),
             AllIcons.Actions.Play_back
@@ -457,7 +439,7 @@ class ReachabilityViewComponent(
         }
     }
 
-    private inner class ForwardAction internal constructor() :
+    private inner class ForwardAction :
         AnAction(
             CodeInsightBundle.messagePointer("quick.definition.forward"),
             AllIcons.Actions.Play_forward
@@ -474,7 +456,7 @@ class ReachabilityViewComponent(
         }
     }
 
-    private inner class EditSourceAction internal constructor() :
+    private inner class EditSourceAction :
         EditSourceActionBase(
             true,
             AllIcons.Actions.EditSource,
@@ -482,18 +464,13 @@ class ReachabilityViewComponent(
         ) {
         override fun actionPerformed(e: AnActionEvent) {
             super.actionPerformed(e)
-            if (myHint!!.isVisible) {
-                myHint!!.cancel()
-            }
+            myHint?.takeIf { it.isVisible }?.cancel()
         }
     }
 
     private open inner class EditSourceActionBase
-    internal constructor(
-        private val myFocusEditor: Boolean,
-        icon: Icon?,
-        text: @ActionText String?
-    ) : AnAction(text, null, icon) {
+    constructor(private val myFocusEditor: Boolean, icon: Icon?, text: @ActionText String?) :
+        AnAction(text, null, icon) {
         override fun update(e: AnActionEvent) {
             e.presentation.isEnabled =
                 fileChooserComboBox == null || !fileChooserComboBox!!.isPopupVisible
@@ -505,19 +482,13 @@ class ReachabilityViewComponent(
     }
 
     private fun collectElementsForShowUsages(): Array<PsiElement> {
-        val result: MutableList<PsiElement> = ArrayList()
-        for (element in elements!!) {
-            val psiElement = element.elementForShowUsages
-            if (psiElement != null) {
-                result.add(psiElement)
-            }
-        }
-        return PsiUtilCore.toPsiElementArray(result)
+        val showUsageElements = elements?.mapNotNull { it.elementForShowUsages } ?: listOf()
+        return PsiUtilCore.toPsiElementArray(showUsageElements)
     }
 
     companion object {
-        private val TEXT_PAGE_KEY: @NonNls String? = "Text"
-        private val BINARY_PAGE_KEY: @NonNls String? = "Binary"
+        private val TEXT_PAGE_KEY: @NonNls String = "Text"
+        private val BINARY_PAGE_KEY: @NonNls String = "Binary"
         private const val IMPLEMENTATION_VIEW_PLACE = "ImplementationView"
         private fun createRenderer(project: Project?): ListCellRenderer<FileDescriptor?> {
             val mainRenderer: ListCellRenderer<FileDescriptor?> =
@@ -532,7 +503,7 @@ class ReachabilityViewComponent(
                         background = UIUtil.getListBackground(selected, true)
                         if (value != null) {
                             val element = value.myElement
-                            setIcon(getIconForFile(value.myFile, project))
+                            icon = getIconForFile(value.myFile, project)
                             append(element.presentableText)
                             val presentation = element.containerPresentation
                             if (presentation != null) {
@@ -558,9 +529,9 @@ class ReachabilityViewComponent(
                         hasFocus: Boolean
                     ) {
                         foreground = UIUtil.getListForeground(selected, true)
-                        if (value != null) {
-                            text = value.myElement.locationText
-                            icon = value.myElement.locationIcon
+                        value?.let {
+                            text = it.myElement.locationText
+                            icon = it.myElement.locationIcon
                         }
                     }
                 }
@@ -569,7 +540,7 @@ class ReachabilityViewComponent(
 
         private fun update(
             elements: Collection<ImplementationViewElement>,
-            f: PairFunction<in Array<ImplementationViewElement>, in List<FileDescriptor?>, Boolean>
+            f: (Array<ImplementationViewElement>, List<FileDescriptor?>) -> Boolean
         ) {
             val candidates: MutableList<ImplementationViewElement> = ArrayList(elements.size)
             val files: MutableList<FileDescriptor?> = ArrayList(elements.size)
@@ -591,24 +562,25 @@ class ReachabilityViewComponent(
                 }
                 candidates.add(element)
             }
-            f.`fun`(candidates.toTypedArray(), files)
+            f(candidates.toTypedArray(), files)
         }
 
         private fun getIconForFile(virtualFile: VirtualFile, project: Project?): Icon {
             return IconUtil.getIcon(virtualFile, 0, project)
         }
 
-        fun getNewText(elt: PsiElement): String? {
-            val project = elt.project
-            val psiFile = getContainingFile(elt)
-            val doc = PsiDocumentManager.getInstance(project).getDocument(psiFile!!) ?: return null
-            if (elt.textRange == null) {
+        fun getNewText(element: PsiElement): String? {
+            val project = element.project
+            val file = getContainingFile(element)
+            val doc =
+                file?.let { PsiDocumentManager.getInstance(project).getDocument(it) } ?: return null
+            if (element.textRange == null) {
                 return null
             }
             val implementationTextSelectioner =
-                LanguageImplementationTextSelectioner.INSTANCE.forLanguage(elt.language)
-            val start = implementationTextSelectioner.getTextStartOffset(elt)
-            var end = implementationTextSelectioner.getTextEndOffset(elt)
+                LanguageImplementationTextSelectioner.INSTANCE.forLanguage(element.language)
+            val start = implementationTextSelectioner.getTextStartOffset(element)
+            var end = implementationTextSelectioner.getTextEndOffset(element)
             val rawDefinition = doc.charsSequence.subSequence(start, end)
             while (end > start &&
                 StringUtil.isLineBreak(
@@ -621,12 +593,13 @@ class ReachabilityViewComponent(
                 if (end < doc.textLength) doc.getLineEndOffset(doc.getLineNumber(end))
                 else doc.textLength
             val text = doc.charsSequence.subSequence(lineStart, lineEnd).toString()
-            val processor = LanguageImplementationTextProcessor.INSTANCE.forLanguage(elt.language)
-            return if (processor != null) processor.process(text, elt) else text
+            val processor =
+                LanguageImplementationTextProcessor.INSTANCE.forLanguage(element.language)
+            return processor?.process(text, element) ?: text
         }
 
-        private fun getContainingFile(elt: PsiElement): PsiFile? {
-            val psiFile = elt.containingFile ?: return null
+        private fun getContainingFile(element: PsiElement): PsiFile? {
+            val psiFile = element.containingFile ?: return null
             return psiFile.originalFile
         }
     }
