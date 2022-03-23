@@ -12,7 +12,6 @@ import com.intellij.find.FindUtil
 import com.intellij.icons.AllIcons
 import com.intellij.ide.IdeBundle
 import com.intellij.ide.highlighter.HighlighterFactory
-import com.intellij.internal.statistic.service.fus.collectors.UIEventLogger
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.actionSystem.ex.ToolbarLabelAction
 import com.intellij.openapi.actionSystem.impl.ActionButton
@@ -20,7 +19,6 @@ import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.ex.EditorEx
-import com.intellij.openapi.editor.highlighter.EditorHighlighter
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorProvider
 import com.intellij.openapi.fileEditor.ex.FileEditorProviderManager
@@ -55,7 +53,6 @@ import java.awt.BorderLayout
 import java.awt.CardLayout
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.util.ArrayList
 import java.util.HashSet
