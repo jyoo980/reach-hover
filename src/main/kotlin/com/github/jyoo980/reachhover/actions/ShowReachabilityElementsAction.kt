@@ -3,6 +3,7 @@ package com.github.jyoo980.reachhover.actions
 import com.github.jyoo980.reachhover.codeinsight.ReachabilityElementViewSession
 import com.github.jyoo980.reachhover.model.ReachabilityContext
 import com.github.jyoo980.reachhover.model.map
+import com.github.jyoo980.reachhover.ui.ReachabilityViewComponent
 import com.github.jyoo980.reachhover.ui.ReachabilityViewElement
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.hint.ImplementationViewComponent
@@ -48,7 +49,7 @@ class ShowReachabilityElementsAction {
                 viewComponent?.update(session.implementationElements, 0)
             }
 
-            val viewComponent = ImplementationViewComponent(session.implementationElements, 0, null)
+            val viewComponent = ReachabilityViewComponent(session.implementationElements, 0, null)
             val updateProcessor =
                 object : PopupUpdateProcessor(editor.project) {
                     override fun updatePopup(lookupItemObject: Any?) {
