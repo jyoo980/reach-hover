@@ -1,7 +1,6 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.intellij.codeInsight.hint.ElementLocationUtil
-import com.intellij.codeInsight.hint.ImplementationViewComponent
 import com.intellij.codeInsight.hint.ImplementationViewElement
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.fileEditor.OpenFileDescriptor
@@ -33,10 +32,8 @@ class ReachabilityViewElement(private val element: PsiElement) : ImplementationV
         get() {
             val elementText =
                 element.takeUnless { it is PsiDirectory }?.let {
-                    // TODO: Will need to implement a new function that extracts "view" of code. See
-                    // below.
-                    // https://github.com/JetBrains/intellij-community/blob/6eee304b461d1f3c9745d15a76de86e4bbf5c332/platform/lang-impl/src/com/intellij/codeInsight/hint/ImplementationViewComponent.java#L477
-                    ImplementationViewComponent.getNewText(it)
+                    // TODO: re-implement ReachabilityViewComponent#getNewText
+                    ReachabilityViewComponent.getNewText(it)
                 }
                     ?: elementFallbackText
             return elementText.trimStart()
