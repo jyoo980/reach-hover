@@ -309,12 +309,10 @@ public abstract class JReachabilityPanel extends JPanel implements DataProvider,
         return navigatables;
     }
 
-    public boolean isToShowAutoScrollButton() {return true;}
     public abstract boolean isAutoScroll();
 
     public abstract void setAutoScroll(boolean autoScroll);
 
-    public boolean isToShowPreviewButton() {return true;}
     public abstract boolean isPreview();
 
     public abstract void setPreview(boolean preview);

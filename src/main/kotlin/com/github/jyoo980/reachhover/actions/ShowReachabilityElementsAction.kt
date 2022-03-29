@@ -3,7 +3,7 @@ package com.github.jyoo980.reachhover.actions
 import com.github.jyoo980.reachhover.codeinsight.ReachabilityElementViewSession
 import com.github.jyoo980.reachhover.model.ReachabilityContext
 import com.github.jyoo980.reachhover.model.map
-import com.github.jyoo980.reachhover.ui.JReachabilityPanel
+import com.github.jyoo980.reachhover.ui.ReachabilityPanel
 import com.github.jyoo980.reachhover.ui.ReachabilityViewElement
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.hint.ImplementationViewComponent
@@ -61,35 +61,13 @@ class ShowReachabilityElementsAction {
 
             val viewComponent =
                 object :
-                    JReachabilityPanel(
+                    ReachabilityPanel(
                         session.project,
                         dataflowFromHere,
                         root,
                         false,
                     ) {
-                    override fun isToShowAutoScrollButton(): Boolean {
-                        return false
-                    }
-
-                    override fun isToShowPreviewButton(): Boolean {
-                        return false
-                    }
-
-                    override fun isAutoScroll(): Boolean {
-                        return false
-                    }
-
-                    override fun setAutoScroll(autoScroll: Boolean) {
-                        isAutoScroll = false
-                    }
-
-                    override fun isPreview(): Boolean {
-                        return true
-                    }
-
-                    override fun setPreview(preview: Boolean) {
-                        isPreview = preview
-                    }
+                    override var isAutoScroll: Boolean = false
                 }
             val updateProcessor =
                 object : PopupUpdateProcessor(editor.project) {
@@ -98,6 +76,7 @@ class ShowReachabilityElementsAction {
                     }
                 }
 
+            viewComponent.setSize(420, 200)
             val popupBuilder =
                 JBPopupFactory.getInstance()
                     .createComponentPopupBuilder(viewComponent, viewComponent)
@@ -119,7 +98,6 @@ class ShowReachabilityElementsAction {
                 session.editor,
                 DataManager.getInstance().getDataContext()
             )
-            //            viewComponent.setHint(popup, title)
             popupRef = WeakReference(popup)
         }
     }
