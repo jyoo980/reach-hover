@@ -30,9 +30,7 @@ class ReachabilityViewElement(private val element: PsiElement) : ImplementationV
 
     override val text: String?
         get() {
-            val elementText =
-                element.takeUnless { it is PsiDirectory }?.text
-                    ?: elementFallbackText
+            val elementText = element.takeUnless { it is PsiDirectory }?.text ?: elementFallbackText
             return elementText.trimStart()
         }
 
