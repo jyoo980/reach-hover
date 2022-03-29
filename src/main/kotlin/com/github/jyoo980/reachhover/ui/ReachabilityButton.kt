@@ -43,7 +43,8 @@ sealed class ReachabilityButton(
                             expr,
                             SliceMetadataTransformer().transform(tree)
                         )
-                    ShowReachabilityElementsAction().performForContext(reachabilityContext)
+                    ShowReachabilityElementsAction()
+                        .performForContext(reachabilityContext, sliceRoot, dataflowFromHere)
                 }
             }
         }
