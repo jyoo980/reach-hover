@@ -31,7 +31,6 @@ import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import javax.swing.*
 import javax.swing.event.TreeExpansionEvent
-import javax.swing.event.TreeSelectionEvent
 import javax.swing.event.TreeWillExpandListener
 import javax.swing.tree.*
 
@@ -74,7 +73,7 @@ abstract class ReachabilityPanel(
             myBuilder.expand(rootNode1) {
                 if (isDisposed || myBuilder.isDisposed || myProject.isDisposed) return@expand
                 val children = rootNode1.cachedChildren
-                if (!children.isEmpty()) {
+                if (children.isNotEmpty()) {
                     myBuilder.select(children[0]) // first there is ony one child
                 }
             }
@@ -84,27 +83,25 @@ abstract class ReachabilityPanel(
     }
 
     private fun layoutPanel() {
-        if (myUsagePreviewPanel != null) {
-            Disposer.dispose(myUsagePreviewPanel!!)
-        }
+        myUsagePreviewPanel?.let { Disposer.dispose(it) }
         removeAll()
         val pane = ScrollPaneFactory.createScrollPane(myTree)
         pane.border = IdeBorderFactory.createBorder(SideBorder.LEFT or SideBorder.RIGHT)
         val splitter = Splitter(true, UsageViewSettings.instance.previewUsagesSplitterProportion)
-        splitter.setFirstComponent(pane)
+        splitter.firstComponent = pane
         myUsagePreviewPanel = UsagePreviewPanel(myProject, UsageViewPresentation())
-        myUsagePreviewPanel!!.border = IdeBorderFactory.createBorder(SideBorder.LEFT)
-        Disposer.register(this, myUsagePreviewPanel!!)
-        splitter.setSecondComponent(myUsagePreviewPanel)
+        myUsagePreviewPanel?.border = IdeBorderFactory.createBorder(SideBorder.LEFT)
+        myUsagePreviewPanel?.let { Disposer.register(this, it) }
+        splitter.secondComponent = myUsagePreviewPanel
         add(splitter, BorderLayout.CENTER)
         myTree.parent.background = UIUtil.getTreeBackground()
         revalidate()
     }
 
     override fun dispose() {
-        if (myUsagePreviewPanel != null) {
+        myUsagePreviewPanel?.let {
             UsageViewSettings.instance.previewUsagesSplitterProportion =
-                (myUsagePreviewPanel!!.parent as Splitter).proportion
+                (it.parent as Splitter).proportion
             myUsagePreviewPanel = null
         }
         isDisposed = true
@@ -164,9 +161,7 @@ abstract class ReachabilityPanel(
         TreeUtil.installActions(tree)
         ToolTipManager.sharedInstance().registerComponent(tree)
         myAutoScrollToSourceHandler.install(tree)
-        tree.selectionModel.addTreeSelectionListener { e: TreeSelectionEvent? ->
-            treeSelectionChanged()
-        }
+        tree.selectionModel.addTreeSelectionListener { treeSelectionChanged() }
         tree.addKeyListener(
             object : KeyAdapter() {
                 override fun keyPressed(e: KeyEvent) {
@@ -191,7 +186,7 @@ abstract class ReachabilityPanel(
                 override fun treeWillExpand(event: TreeExpansionEvent) {
                     val path = event.path
                     val node = fromPath(path)
-                    node!!.calculateDupNode()
+                    node?.calculateDupNode()
                 }
             }
         )
@@ -200,26 +195,21 @@ abstract class ReachabilityPanel(
 
     private fun treeSelectionChanged() {
         SwingUtilities.invokeLater {
-            if (isDisposed) return@invokeLater
-            val infos = selectedUsageInfos
-            if (infos != null && myUsagePreviewPanel != null) {
-                myUsagePreviewPanel!!.updateLayout(infos)
+            isDisposed.takeUnless { it }?.let {
+                val infos = selectedUsageInfos ?: return@let
+                myUsagePreviewPanel?.updateLayout(infos)
             }
         }
     }
 
     private val selectedUsageInfos: List<UsageInfo>?
-        private get() {
-            val paths = myTree.selectionPaths ?: return null
-            val result = ArrayList<UsageInfo>()
-            for (path in paths) {
-                val sliceNode = fromPath(path)
-                if (sliceNode != null) {
-                    result.add(sliceNode.value.usageInfo)
+        get() =
+            myTree.selectionPaths?.let { it ->
+                it.mapNotNull { path ->
+                    val sliceNode = fromPath(path)
+                    sliceNode?.value?.usageInfo
                 }
             }
-            return if (result.isEmpty()) null else result
-        }
 
     override fun getData(dataId: String): Any? {
         if (CommonDataKeys.NAVIGATABLE_ARRAY.`is`(dataId)) {
@@ -232,7 +222,7 @@ abstract class ReachabilityPanel(
     }
 
     private val navigatables: List<Navigatable>
-        private get() {
+        get() {
             val paths = myTree.selectionPaths ?: return emptyList()
             val navigatables = ArrayList<Navigatable>()
             for (path in paths) {
@@ -252,18 +242,13 @@ abstract class ReachabilityPanel(
 
     abstract var isAutoScroll: Boolean
 
-    var isPreview: Boolean = true
-
     companion object {
         private fun fromPath(path: TreePath): SliceNode? {
             val lastPathComponent = path.lastPathComponent
-            if (lastPathComponent is DefaultMutableTreeNode) {
-                val userObject = lastPathComponent.userObject
-                if (userObject is SliceNode) {
-                    return userObject
-                }
+            return (lastPathComponent as? DefaultMutableTreeNode)?.let {
+                val userObj = it.userObject
+                return userObj as? SliceNode
             }
-            return null
         }
     }
 }
