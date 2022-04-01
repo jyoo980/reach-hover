@@ -3,7 +3,7 @@ package com.github.jyoo980.reachhover.actions
 import com.github.jyoo980.reachhover.codeinsight.ReachabilityElementViewSession
 import com.github.jyoo980.reachhover.model.ReachabilityContext
 import com.github.jyoo980.reachhover.model.map
-import com.github.jyoo980.reachhover.ui.ReachabilityViewComponent
+import com.github.jyoo980.reachhover.ui.ReachabilityPanel
 import com.github.jyoo980.reachhover.ui.ReachabilityViewElement
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.hint.ImplementationViewComponent
@@ -15,6 +15,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.reference.SoftReference
+import com.intellij.slicer.SliceNode
 import com.intellij.ui.popup.AbstractPopup
 import com.intellij.ui.popup.PopupPositionManager
 import com.intellij.ui.popup.PopupUpdateProcessor
@@ -26,16 +27,25 @@ class ShowReachabilityElementsAction {
     private val logger: Logger = Logger.getInstance(ShowReachabilityElementsAction::class.java)
     private var popupRef: Reference<JBPopup>? = null
 
-    fun performForContext(context: ReachabilityContext) {
+    fun performForContext(
+        context: ReachabilityContext,
+        root: SliceNode,
+        dataflowFromHere: Boolean
+    ) {
         val (editor, exprUnderInspection, tree) = context
         val reachabilityViewElements =
             tree.map { metadata -> metadata.element?.let { ReachabilityViewElement(it) }!! }
         ReachabilityElementViewSession(editor, exprUnderInspection, reachabilityViewElements).also {
-            showReachabilitySession(it, editor)
+            showReachabilitySession(it, editor, root, dataflowFromHere)
         }
     }
 
-    private fun showReachabilitySession(session: ImplementationViewSession, editor: Editor) {
+    private fun showReachabilitySession(
+        session: ImplementationViewSession,
+        editor: Editor,
+        root: SliceNode,
+        dataflowFromHere: Boolean
+    ) {
         if (session.implementationElements.isNotEmpty()) {
             // TODO: come up with an actual title based on the element/expression under analysis
             val title = "Reachability View..."
@@ -49,7 +59,16 @@ class ShowReachabilityElementsAction {
                 viewComponent?.update(session.implementationElements, 0)
             }
 
-            val viewComponent = ReachabilityViewComponent(session.implementationElements, 0, null)
+            val viewComponent =
+                object :
+                    ReachabilityPanel(
+                        session.project,
+                        dataflowFromHere,
+                        root,
+                        false,
+                    ) {
+                    override var isAutoScroll: Boolean = false
+                }
             val updateProcessor =
                 object : PopupUpdateProcessor(editor.project) {
                     override fun updatePopup(lookupItemObject: Any?) {
@@ -57,12 +76,10 @@ class ShowReachabilityElementsAction {
                     }
                 }
 
+            viewComponent.setSize(420, 200)
             val popupBuilder =
                 JBPopupFactory.getInstance()
-                    .createComponentPopupBuilder(
-                        viewComponent,
-                        viewComponent.preferredFocusableComponent
-                    )
+                    .createComponentPopupBuilder(viewComponent, viewComponent)
                     .setProject(editor.project)
                     .addListener(updateProcessor)
                     .addUserData(updateProcessor)
@@ -81,7 +98,6 @@ class ShowReachabilityElementsAction {
                 session.editor,
                 DataManager.getInstance().getDataContext()
             )
-            viewComponent.setHint(popup, title)
             popupRef = WeakReference(popup)
         }
     }
