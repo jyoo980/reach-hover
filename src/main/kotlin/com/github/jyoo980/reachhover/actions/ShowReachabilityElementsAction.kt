@@ -12,6 +12,7 @@ import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.ide.DataManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.ui.popup.ActiveIcon
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.reference.SoftReference
@@ -19,6 +20,7 @@ import com.intellij.slicer.SliceNode
 import com.intellij.ui.popup.AbstractPopup
 import com.intellij.ui.popup.PopupPositionManager
 import com.intellij.ui.popup.PopupUpdateProcessor
+import icons.IconManager
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
 
@@ -32,11 +34,11 @@ class ShowReachabilityElementsAction {
         root: SliceNode,
         dataflowFromHere: Boolean
     ) {
-        val (editor, exprUnderInspection, tree) = context
+        val (editor, exprUnderInspection, questionText, tree) = context
         val reachabilityViewElements =
             tree.map { metadata -> metadata.element?.let { ReachabilityViewElement(it) }!! }
         ReachabilityElementViewSession(editor, exprUnderInspection, reachabilityViewElements).also {
-            showReachabilitySession(it, editor, root, dataflowFromHere)
+            showReachabilitySession(it, editor, root, questionText, dataflowFromHere)
         }
     }
 
@@ -44,11 +46,11 @@ class ShowReachabilityElementsAction {
         session: ImplementationViewSession,
         editor: Editor,
         root: SliceNode,
+        questionText: String,
         dataflowFromHere: Boolean
     ) {
         if (session.implementationElements.isNotEmpty()) {
             // TODO: come up with an actual title based on the element/expression under analysis
-            val title = "Reachability View..."
             session.implementationElements.forEach {
                 logger.info("ViewElement Impl: ${it.elementForShowUsages}")
             }
@@ -83,6 +85,8 @@ class ShowReachabilityElementsAction {
                     .setProject(editor.project)
                     .addListener(updateProcessor)
                     .addUserData(updateProcessor)
+                    .setTitle(questionText)
+                    .setTitleIcon(IconManager.reachabilityIcon.let(::ActiveIcon))
                     .setDimensionServiceKey(
                         editor.project,
                         DocumentationManager.JAVADOC_LOCATION_AND_SIZE,
