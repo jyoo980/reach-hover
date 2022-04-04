@@ -53,6 +53,7 @@ abstract class ReachabilityPanel(
             }
         }
     private var myUsagePreviewPanel: UsagePreviewPanel? = null
+    private var myLabel: JLabel? = JLabel("")
     private val myProject: Project
     private var isDisposed = false
     private val myProvider: SliceLanguageSupportProvider?
@@ -93,6 +94,7 @@ abstract class ReachabilityPanel(
         myUsagePreviewPanel?.border = IdeBorderFactory.createBorder(SideBorder.LEFT)
         myUsagePreviewPanel?.let { Disposer.register(this, it) }
         splitter.secondComponent = myUsagePreviewPanel
+        myLabel?.let { add(it, BorderLayout.SOUTH) }
         add(splitter, BorderLayout.CENTER)
         myTree.parent.background = UIUtil.getTreeBackground()
         revalidate()
@@ -198,6 +200,13 @@ abstract class ReachabilityPanel(
             isDisposed.takeUnless { it }?.let {
                 val infos = selectedUsageInfos ?: return@let
                 myUsagePreviewPanel?.updateLayout(infos)
+                val selectedNode = myTree.selectionPath?.let { fromPath(it) }
+                val rawFileName = selectedNode?.let { it.value.element?.containingFile?.name }
+                val formattedFileName =
+                    rawFileName?.let {
+                        "<html><span style=\"font-family:JetBrains Mono;\">$it</font></span></html>"
+                    }
+                myLabel?.text = formattedFileName
             }
         }
     }
