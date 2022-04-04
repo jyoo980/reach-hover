@@ -1,6 +1,7 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.github.jyoo980.reachhover.model.SliceTreeBuilder
+import com.github.jyoo980.reachhover.util.PresentationUtil
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.util.treeView.AbstractTreeNode
 import com.intellij.openapi.Disposable
@@ -9,6 +10,7 @@ import com.intellij.openapi.actionSystem.DataProvider
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.OnePixelDivider
 import com.intellij.openapi.ui.Splitter
 import com.intellij.openapi.util.Disposer
 import com.intellij.pom.Navigatable
@@ -27,6 +29,7 @@ import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.tree.TreeUtil
 import java.awt.BorderLayout
 import java.awt.Component
+import java.awt.GridLayout
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import javax.swing.*
@@ -53,7 +56,7 @@ abstract class ReachabilityPanel(
             }
         }
     private var myUsagePreviewPanel: UsagePreviewPanel? = null
-    private var myLabel: JLabel? = JLabel("")
+    private var myLabel: JPanel? = JPanel(GridLayout(1, 2))
     private val myProject: Project
     private var isDisposed = false
     private val myProvider: SliceLanguageSupportProvider?
@@ -94,6 +97,7 @@ abstract class ReachabilityPanel(
         myUsagePreviewPanel?.border = IdeBorderFactory.createBorder(SideBorder.LEFT)
         myUsagePreviewPanel?.let { Disposer.register(this, it) }
         splitter.secondComponent = myUsagePreviewPanel
+        splitter.divider.background = OnePixelDivider.BACKGROUND
         myLabel?.let { add(it, BorderLayout.SOUTH) }
         add(splitter, BorderLayout.CENTER)
         myTree.parent.background = UIUtil.getTreeBackground()
@@ -201,12 +205,12 @@ abstract class ReachabilityPanel(
                 val infos = selectedUsageInfos ?: return@let
                 myUsagePreviewPanel?.updateLayout(infos)
                 val selectedNode = myTree.selectionPath?.let { fromPath(it) }
-                val rawFileName = selectedNode?.let { it.value.element?.containingFile?.name }
-                val formattedFileName =
-                    rawFileName?.let {
-                        "<html><span style=\"font-family:JetBrains Mono;\">$it</font></span></html>"
-                    }
-                myLabel?.text = formattedFileName
+                selectedNode?.let {
+                    val (fileName, filePath) = PresentationUtil.constructFileComponent(it)
+                    myLabel?.removeAll()
+                    myLabel?.add(fileName, 0)
+                    myLabel?.add(filePath, 1)
+                }
             }
         }
     }
