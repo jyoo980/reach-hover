@@ -41,6 +41,7 @@ sealed class ReachabilityButton(
                         ReachabilityContext(
                             editor,
                             expr,
+                            questionText(),
                             SliceMetadataTransformer().transform(tree)
                         )
                     ShowReachabilityElementsAction()
@@ -54,6 +55,12 @@ sealed class ReachabilityButton(
         return (element as? PsiIdentifier)?.text?.let {
             "<span style=\"font-family:JetBrains Mono;\">$it</font></span>"
         }
+    }
+
+    private fun questionText(): String {
+        val inspectedName = identifierName() ?: "this argument"
+        val key = if (dataflowFromHere) "modifiedQuestion" else "createdQuestion"
+        return "<html>${MyBundle.message(key, inspectedName)}</html>"
     }
 }
 
