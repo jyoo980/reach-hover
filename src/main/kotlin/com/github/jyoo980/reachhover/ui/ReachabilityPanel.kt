@@ -178,7 +178,7 @@ abstract class ReachabilityPanel(
                             if (navigatable.canNavigateToSource()) {
                                 ((navigatable as? AbstractTreeNode<*>)?.value as? Usage)
                                     ?.highlightInEditor()
-                                navigatable.navigate(false)
+                                navigatable.navigate(true)
                             }
                         }
                         e.consume()
