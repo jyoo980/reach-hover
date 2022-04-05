@@ -98,8 +98,8 @@ abstract class ReachabilityPanel(
         myUsagePreviewPanel?.let { Disposer.register(this, it) }
         splitter.secondComponent = myUsagePreviewPanel
         splitter.divider.background = OnePixelDivider.BACKGROUND
-        myLabel?.let { add(it, BorderLayout.SOUTH) }
         add(splitter, BorderLayout.CENTER)
+        myLabel?.let { add(it, BorderLayout.SOUTH) }
         myTree.parent.background = UIUtil.getTreeBackground()
         revalidate()
     }

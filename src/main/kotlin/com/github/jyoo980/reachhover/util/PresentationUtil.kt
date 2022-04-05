@@ -7,8 +7,10 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.slicer.SliceNode
+import com.intellij.util.ui.JBUI
 import javax.swing.JComponent
 import javax.swing.JLabel
+import javax.swing.SwingConstants
 
 object PresentationUtil {
 
@@ -20,8 +22,17 @@ object PresentationUtil {
                 getPresentablePath(it, containingFile, maxChars = 120)
                     ?.removeSuffix("/$rawFileName")
             }
-        val fileNameComponent = (rawFileName ?: "File not found").let(::JLabel)
-        val filePathComponent = (fullPath ?: "Path not found").let(::JLabel)
+        val fileNameComponent =
+            JLabel((rawFileName ?: "File not found"), SwingConstants.LEFT).also {
+                // Note: VirtualFile#fileType may be slow, revisit this if there's a perf.
+                // bottleneck.
+                it.icon = containingFile?.fileType?.icon
+                it.border = JBUI.Borders.empty(10, 5, 5, 0)
+            }
+        val filePathComponent =
+            JLabel((fullPath ?: "Path not found"), SwingConstants.RIGHT).also {
+                it.border = JBUI.Borders.empty(10, 0, 5, 5)
+            }
         return (fileNameComponent to filePathComponent)
     }
 
