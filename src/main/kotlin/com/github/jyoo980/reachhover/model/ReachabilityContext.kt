@@ -7,5 +7,4 @@ data class ReachabilityContext(
     val editor: Editor,
     val element: PsiElement,
     val questionText: String,
-    val tree: Tree<SliceMetadata>
 )

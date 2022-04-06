@@ -4,8 +4,6 @@ import com.github.jyoo980.reachhover.MyBundle
 import com.github.jyoo980.reachhover.actions.ShowReachabilityElementsAction
 import com.github.jyoo980.reachhover.model.ReachabilityContext
 import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
-import com.github.jyoo980.reachhover.services.tree.SliceMetadataTransformer
-import com.github.jyoo980.reachhover.services.tree.TreeBuilder
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
@@ -35,14 +33,11 @@ sealed class ReachabilityButton(
                 expressionToAnalyze?.let { expr ->
                     val sliceRoot =
                         SliceDispatchService.sliceRootUsage(expr, project, dataflowFromHere)
-                    val tree = TreeBuilder.treeFrom(sliceRoot)
-                    // TODO(jyoo): refactor this, SliceTransformer does NOT belong here.
                     val reachabilityContext =
                         ReachabilityContext(
                             editor,
                             expr,
                             questionText(),
-                            SliceMetadataTransformer().transform(tree)
                         )
                     ShowReachabilityElementsAction()
                         .performForContext(reachabilityContext, sliceRoot, dataflowFromHere)
