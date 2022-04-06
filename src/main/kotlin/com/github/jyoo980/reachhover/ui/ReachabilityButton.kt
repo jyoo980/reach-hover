@@ -25,7 +25,7 @@ sealed class ReachabilityButton(
             isContentAreaFilled = false
         }
 
-    abstract fun setButtonText(text: String? = null)
+    abstract fun setButtonText(providedIdentifierName: String? = null)
 
     fun activateAction(editor: Editor) {
         editor.project?.also { project ->
@@ -41,7 +41,7 @@ sealed class ReachabilityButton(
                         ReachabilityContext(
                             editor,
                             expr,
-                            questionText(),
+                            ui.text,
                             SliceMetadataTransformer().transform(tree)
                         )
                     ShowReachabilityElementsAction()
@@ -56,40 +56,26 @@ sealed class ReachabilityButton(
             "<span style=\"font-family:JetBrains Mono;\">$it</font></span>"
         }
     }
-
-    private fun questionText(): String {
-        val inspectedName = identifierName() ?: "this argument"
-        val key = if (dataflowFromHere) "modifiedQuestion" else "createdQuestion"
-        return "<html>${MyBundle.message(key, inspectedName)}</html>"
-    }
 }
 
 class BackwardReachabilityButton(element: PsiElement) :
     ReachabilityButton(element, dataflowFromHere = false) {
 
-    override fun setButtonText(text: String?) {
-        val textToSet =
-            text
-                ?: run {
-                    val nameOfArgumentToInspect = identifierName() ?: "this argument"
-                    val fullText = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
-                    "<html>$fullText</html"
-                }
-        ui.text = textToSet
+    override fun setButtonText(providedIdentifierName: String?) {
+        val nameOfArgumentToInspect = providedIdentifierName ?: identifierName() ?: "this argument"
+        val fullText = MyBundle.message("createdQuestion", nameOfArgumentToInspect)
+        val formattedText = "<html>$fullText</html"
+        ui.text = formattedText
     }
 }
 
 class ForwardReachabilityButton(element: PsiElement) :
     ReachabilityButton(element, dataflowFromHere = true) {
 
-    override fun setButtonText(text: String?) {
-        val textToSet =
-            text
-                ?: run {
-                    val nameOfArgumentToInspect = identifierName() ?: "this value"
-                    val fullText = MyBundle.message("modifiedQuestion", nameOfArgumentToInspect)
-                    "<html>$fullText</html>"
-                }
-        ui.text = textToSet
+    override fun setButtonText(providedIdentifierName: String?) {
+        val nameOfArgumentToInspect = providedIdentifierName ?: identifierName() ?: "this value"
+        val fullText = MyBundle.message("modifiedQuestion", nameOfArgumentToInspect)
+        val formattedText = "<html>$fullText</html>"
+        ui.text = formattedText
     }
 }

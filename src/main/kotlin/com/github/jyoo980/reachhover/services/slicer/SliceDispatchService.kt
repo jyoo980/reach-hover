@@ -1,12 +1,9 @@
 package com.github.jyoo980.reachhover.services.slicer
 
 import com.intellij.analysis.AnalysisScope
-import com.intellij.lang.LangBundle
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.slicer.*
-import java.util.regex.Pattern
 
 object SliceDispatchService {
 
@@ -18,25 +15,12 @@ object SliceDispatchService {
         return provider?.getExpressionAtCaret(elementAtHover, isForwardSlice)
     }
 
-    fun elementDescription(elementAtHover: PsiElement, isForwardSlice: Boolean): String {
-        // [directionPrefix] depends on whether a forward/backward analysis is performed.
-        val key =
-            if (isForwardSlice) "tab.title.analyze.dataflow.from"
-            else "tab.title.analyze.dataflow.to.here"
-        val directionPrefix = LangBundle.message(key)
-        val dialogWindowTitle =
-            SliceManager.getElementDescription(directionPrefix, elementAtHover, null)
-        return Pattern.compile("(<style>.*</style>)|<[^<>]*>", Pattern.DOTALL)
-            .matcher(dialogWindowTitle)
-            .replaceAll("")
-    }
-
     fun sliceRootUsage(
         elementAtHover: PsiElement,
         project: Project,
         isForwardSlice: Boolean
     ): SliceRootNode {
-        val params = defaultAnalysisParams(elementAtHover.containingFile, isForwardSlice)
+        val params = defaultAnalysisParams(elementAtHover, isForwardSlice)
         return SliceRootNode(
             project,
             DuplicateMap(),
@@ -45,13 +29,13 @@ object SliceDispatchService {
     }
 
     private fun defaultAnalysisParams(
-        fileContainingElement: PsiFile,
+        element: PsiElement,
         isForwardSlice: Boolean
     ): SliceAnalysisParams {
         return SliceAnalysisParams().apply {
             dataFlowToThis = !isForwardSlice
             showInstanceDereferences = true
-            scope = AnalysisScope(fileContainingElement)
+            scope = AnalysisScope(element.project)
         }
     }
 }

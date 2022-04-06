@@ -1,8 +1,6 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.github.jyoo980.reachhover.model.ReachabilityHoverContext
-import com.github.jyoo980.reachhover.util.isLocalVariableReference
-import com.github.jyoo980.reachhover.util.isNonLiteralMethodArg
 import com.intellij.psi.PsiElement
 import java.awt.GridLayout
 import javax.swing.JPanel
@@ -16,10 +14,10 @@ class ReachabilityPopupBuilder {
     // IntelliJ).
 
     fun constructPopupFor(reachabilityContext: ReachabilityHoverContext): JPanel {
-        val (element, _, editor) = reachabilityContext
+        val (element, _, editor, isForwardAnalysis, identifierName) = reachabilityContext
         val reachabilityButton =
-            createReachabilityButton(element)?.apply {
-                setButtonText()
+            createReachabilityButton(element, isForwardAnalysis).apply {
+                setButtonText(identifierName)
                 activateAction(editor)
             }
         val showDocumentationButton =
@@ -28,16 +26,19 @@ class ReachabilityPopupBuilder {
                 activateAction()
             }
         return JPanel(GridLayout(2, 1)).apply {
-            reachabilityButton?.let { this.add(it.ui) }
+            reachabilityButton.let { this.add(it.ui) }
             add(showDocumentationButton.ui)
         }
     }
 
-    private fun createReachabilityButton(element: PsiElement): ReachabilityButton? {
-        return if (element.isLocalVariableReference()) {
+    private fun createReachabilityButton(
+        element: PsiElement,
+        isForwardAnalysis: Boolean
+    ): ReachabilityButton {
+        return if (isForwardAnalysis) {
             ForwardReachabilityButton(element)
-        } else if (element.isNonLiteralMethodArg()) {
+        } else {
             BackwardReachabilityButton(element)
-        } else null
+        }
     }
 }
