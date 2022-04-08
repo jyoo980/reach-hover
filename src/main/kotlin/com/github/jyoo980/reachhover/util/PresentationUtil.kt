@@ -2,6 +2,7 @@ package com.github.jyoo980.reachhover.util
 
 import com.intellij.ide.scratch.ScratchUtil
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -42,11 +43,12 @@ object PresentationUtil {
         maxChars: Int
     ): String? {
         return virtualFile?.let {
+            val projectDir = project.guessProjectDir()
             val path =
                 if (ScratchUtil.isScratch(it)) ScratchUtil.getRelativePath(project, it)
-                else if (VfsUtilCore.isAncestor(project.baseDir, it, true))
-                    VfsUtilCore.getRelativeLocation(it, project.baseDir)
-                else FileUtil.getLocationRelativeToUserHome(it.path)
+                else if (projectDir != null && VfsUtilCore.isAncestor(projectDir, it, true)) {
+                    VfsUtilCore.getRelativeLocation(it, projectDir)
+                } else FileUtil.getLocationRelativeToUserHome(it.path)
             return path?.let { p ->
                 maxChars.takeIf { chars -> chars < 0 }?.let { path }
                     ?: StringUtil.trimMiddle(p, maxChars)

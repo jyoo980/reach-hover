@@ -1,4 +1,6 @@
 .gradle
 .idea
 .qodana
+.metals
+.vscode
 build
