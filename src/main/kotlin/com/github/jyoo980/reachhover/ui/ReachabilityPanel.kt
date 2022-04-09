@@ -1,6 +1,7 @@
 package com.github.jyoo980.reachhover.ui
 
 import com.github.jyoo980.reachhover.model.SliceTreeBuilder
+import com.github.jyoo980.reachhover.ui.scope.ReachabilityScopePanel
 import com.github.jyoo980.reachhover.util.PresentationUtil
 import com.intellij.ide.DefaultTreeExpander
 import com.intellij.ide.util.treeView.AbstractTreeNode
@@ -32,7 +33,10 @@ import java.awt.Component
 import java.awt.GridLayout
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
-import javax.swing.*
+import javax.swing.JPanel
+import javax.swing.JTree
+import javax.swing.SwingUtilities
+import javax.swing.ToolTipManager
 import javax.swing.event.TreeExpansionEvent
 import javax.swing.event.TreeWillExpandListener
 import javax.swing.tree.*
@@ -98,6 +102,8 @@ abstract class ReachabilityPanel(
         myUsagePreviewPanel?.let { Disposer.register(this, it) }
         splitter.secondComponent = myUsagePreviewPanel
         splitter.divider.background = OnePixelDivider.BACKGROUND
+        val scopesPanel = ReachabilityScopePanel()
+        add(scopesPanel, BorderLayout.NORTH)
         add(splitter, BorderLayout.CENTER)
         myLabel?.let { add(it, BorderLayout.SOUTH) }
         myTree.parent.background = UIUtil.getTreeBackground()
