@@ -15,6 +15,7 @@ import com.intellij.openapi.ui.OnePixelDivider
 import com.intellij.openapi.ui.Splitter
 import com.intellij.openapi.util.Disposer
 import com.intellij.pom.Navigatable
+import com.intellij.psi.PsiElement
 import com.intellij.slicer.SliceLanguageSupportProvider
 import com.intellij.slicer.SliceNode
 import com.intellij.slicer.SliceUsageCellRendererBase
@@ -42,13 +43,14 @@ import javax.swing.event.TreeWillExpandListener
 import javax.swing.tree.*
 
 abstract class ReachabilityPanel(
+    val elementUnderAnalysis: PsiElement,
     project: Project,
-    dataFlowToThis: Boolean,
+    val dataFlowToThis: Boolean,
     rootNode: SliceNode,
-    splitByLeafExpressions: Boolean,
+    val splitByLeafExpressions: Boolean,
 ) : JPanel(BorderLayout()), DataProvider, Disposable {
-    private val myBuilder: SliceTreeBuilder
-    private val myTree: JTree
+    private lateinit var myBuilder: SliceTreeBuilder
+    private lateinit var myTree: JTree
     private val myAutoScrollToSourceHandler: AutoScrollToSourceHandler =
         object : AutoScrollToSourceHandler() {
             override fun isAutoScrollMode(): Boolean {
@@ -69,6 +71,17 @@ abstract class ReachabilityPanel(
         myProvider = rootNode.provider
         ApplicationManager.getApplication().assertIsDispatchThread()
         myProject = project
+        initTree(project, dataFlowToThis, rootNode, splitByLeafExpressions)
+        val scopesPanel = ReachabilityScopePanel(this)
+        layoutPanel(scopesPanel)
+    }
+
+    fun initTree(
+        project: Project,
+        dataFlowToThis: Boolean,
+        rootNode: SliceNode,
+        splitByLeafExpressions: Boolean
+    ) {
         myTree = createTree()
         myBuilder =
             SliceTreeBuilder(myTree, project, dataFlowToThis, rootNode, splitByLeafExpressions)
@@ -87,10 +100,36 @@ abstract class ReachabilityPanel(
             }
             treeSelectionChanged()
         }
-        layoutPanel()
     }
 
-    private fun layoutPanel() {
+    fun refreshTree(rootNode: SliceNode, scopePanel: ReachabilityScopePanel) {
+        myTree = createTree()
+        myBuilder =
+            SliceTreeBuilder(
+                myTree,
+                elementUnderAnalysis.project,
+                dataFlowToThis,
+                rootNode,
+                splitByLeafExpressions
+            )
+        myBuilder.setCanYieldUpdate(!ApplicationManager.getApplication().isUnitTestMode)
+        myBuilder.addSubtreeToUpdate(myTree.model.root as DefaultMutableTreeNode) {
+            if (isDisposed || myBuilder.isDisposed || myProject.isDisposed)
+                return@addSubtreeToUpdate
+            val rootNode1 = myBuilder.getRootSliceNode()
+            myBuilder.expand(rootNode1) {
+                if (isDisposed || myBuilder.isDisposed || myProject.isDisposed) return@expand
+                val children = rootNode1.cachedChildren
+                if (children.isNotEmpty()) {
+                    myBuilder.select(children[0]) // first there is ony one child
+                }
+            }
+            treeSelectionChanged()
+        }
+        layoutPanel(scopePanel)
+    }
+
+    private fun layoutPanel(scopesPanel: ReachabilityScopePanel) {
         myUsagePreviewPanel?.let { Disposer.dispose(it) }
         removeAll()
         val pane = ScrollPaneFactory.createScrollPane(myTree)
@@ -102,7 +141,6 @@ abstract class ReachabilityPanel(
         myUsagePreviewPanel?.let { Disposer.register(this, it) }
         splitter.secondComponent = myUsagePreviewPanel
         splitter.divider.background = OnePixelDivider.BACKGROUND
-        val scopesPanel = ReachabilityScopePanel()
         add(scopesPanel, BorderLayout.NORTH)
         add(splitter, BorderLayout.CENTER)
         myLabel?.let { add(it, BorderLayout.SOUTH) }

@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.ActiveIcon
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.psi.PsiElement
 import com.intellij.reference.SoftReference
 import com.intellij.slicer.SliceNode
 import com.intellij.ui.popup.PopupPositionManager
@@ -26,12 +27,13 @@ class ShowReachabilityElementsAction {
         root: SliceNode,
         dataflowFromHere: Boolean
     ) {
-        val (editor, _, questionText) = context
-        showReachabilitySession(editor, root, questionText, dataflowFromHere)
+        val (editor, elementUnderAnalysis, questionText) = context
+        showReachabilitySession(editor, elementUnderAnalysis, root, questionText, dataflowFromHere)
     }
 
     private fun showReachabilitySession(
         editor: Editor,
+        elementUnderAnalysis: PsiElement,
         root: SliceNode,
         questionText: String,
         dataflowFromHere: Boolean
@@ -43,6 +45,7 @@ class ShowReachabilityElementsAction {
         val viewComponent =
             object :
                 ReachabilityPanel(
+                    elementUnderAnalysis,
                     project,
                     dataflowFromHere,
                     root,
