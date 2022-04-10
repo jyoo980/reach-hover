@@ -13,9 +13,9 @@ object Project : Scope(name = "Project") {
     override fun analysisScope(element: PsiElement): AnalysisScope = AnalysisScope(element.project)
 }
 
-object Module : Scope(name = "Module") {
-    // TODO: how do I analyze the module?
-    override fun analysisScope(element: PsiElement): AnalysisScope = AnalysisScope(element.project)
+object Directory : Scope(name = "Directory") {
+    override fun analysisScope(element: PsiElement): AnalysisScope =
+        AnalysisScope(element.containingFile.containingDirectory)
 }
 
 object File : Scope(name = "File") {

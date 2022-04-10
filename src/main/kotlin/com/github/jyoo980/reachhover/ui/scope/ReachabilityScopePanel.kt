@@ -13,7 +13,7 @@ import javax.swing.JToolBar
 class ReachabilityScopePanel(val reachabilityPanel: ReachabilityPanel) :
     JToolBar(), ScopePanelStyler {
 
-    private val supportedScopes: List<Scope> = listOf(File, Module, Project)
+    private val supportedScopes: List<Scope> = listOf(File, Directory, Project)
     private val scopeSelectionButtons: List<ScopeButton> = supportedScopes.map(::scopeButton)
 
     init {
