@@ -9,7 +9,7 @@ abstract class Scope(val name: String, val icon: Icon = EmptyIcon.ICON_0) {
     abstract fun analysisScope(element: PsiElement): AnalysisScope
 }
 
-object Project : Scope(name = "In Project") {
+object Project : Scope(name = "Project") {
     override fun analysisScope(element: PsiElement): AnalysisScope = AnalysisScope(element.project)
 }
 

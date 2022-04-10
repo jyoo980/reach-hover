@@ -39,9 +39,7 @@ class ShowReachabilityElementsAction {
         dataflowFromHere: Boolean
     ) {
         var popup = SoftReference.dereference(popupRef)
-
         val project = editor.project ?: return
-
         val viewComponent =
             object :
                 ReachabilityPanel(
@@ -59,7 +57,6 @@ class ShowReachabilityElementsAction {
                     // TODO: implement this?
                 }
             }
-
         viewComponent.setSize(420, 200)
         val popupBuilder =
             JBPopupFactory.getInstance()
@@ -77,7 +74,6 @@ class ShowReachabilityElementsAction {
                 .setResizable(true)
                 .setMovable(true)
                 .setRequestFocus(LookupManager.getActiveLookup(editor) != null)
-
         popup = popupBuilder.createPopup()
         PopupPositionManager.positionPopupInBestPosition(
             popup,

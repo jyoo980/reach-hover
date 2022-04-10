@@ -14,6 +14,7 @@ interface ScopePanelStyler {
         button.isOpaque = false
         button.isContentAreaFilled = false
         button.isBorderPainted = false
+        button.border = JBUI.Borders.empty()
         button.maximumSize = Dimension(75, 25)
     }
 }

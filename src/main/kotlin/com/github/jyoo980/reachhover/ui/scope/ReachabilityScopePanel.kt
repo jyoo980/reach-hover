@@ -13,20 +13,25 @@ import javax.swing.JToolBar
 class ReachabilityScopePanel(val reachabilityPanel: ReachabilityPanel) :
     JToolBar(), ScopePanelStyler {
 
-    private val supportedScopes: List<Scope> = listOf(Project, Module, File)
-    private val scopeSelectionButtons = supportedScopes.map(::scopeButton)
+    private val supportedScopes: List<Scope> = listOf(File, Module, Project)
+    private val scopeSelectionButtons: List<ScopeButton> = supportedScopes.map(::scopeButton)
 
     init {
         scopeSelectionButtons.forEachIndexed { i, button -> add(button, i) }
-        this.border = panelBorder()
-        this.isFloatable = false
+        setDefaultSelections()
+        border = panelBorder()
+        isFloatable = false
     }
 
-    private fun scopeButton(scope: Scope): JButton {
+    private fun scopeButton(scope: Scope): ScopeButton {
         return ScopeButton(scope).also {
             applyDefaultStyle(it)
             attachActions(it)
         }
+    }
+
+    private fun setDefaultSelections() {
+        scopeSelectionButtons.firstOrNull { it.scope == File }?.setActive(true)
     }
 
     private fun attachActions(button: ScopeButton) {
@@ -36,22 +41,26 @@ class ReachabilityScopePanel(val reachabilityPanel: ReachabilityPanel) :
                     button.isContentAreaFilled = true
                 }
                 override fun mouseExited(e: MouseEvent?) {
-                    button.isContentAreaFilled = false
+                    button.isContentAreaFilled = button.isSelectedByUser
                 }
-
                 override fun mouseClicked(e: MouseEvent?) {
-                    button.isBorderPainted = !button.isBorderPainted
+                    button.setActive(true)
                     scopeSelectionButtons.filterNot { other -> other == button }.forEach { other ->
                         applyDefaultStyle(other)
+                        other.setActive(false)
                     }
-                    val updatedSliceRoot = foo(reachabilityPanel.elementUnderAnalysis, button.scope)
+                    val updatedSliceRoot =
+                        sliceForSelectedScope(reachabilityPanel.elementUnderAnalysis, button.scope)
                     reachabilityPanel.refreshTree(updatedSliceRoot, this@ReachabilityScopePanel)
                 }
             }
         )
     }
 
-    private fun foo(elementToAnalyze: PsiElement, selectedScope: Scope): SliceRootNode {
+    private fun sliceForSelectedScope(
+        elementToAnalyze: PsiElement,
+        selectedScope: Scope
+    ): SliceRootNode {
         val analysisParams =
             SliceAnalysisParams().apply {
                 dataFlowToThis = !reachabilityPanel.dataFlowToThis
@@ -66,4 +75,12 @@ class ReachabilityScopePanel(val reachabilityPanel: ReachabilityPanel) :
     }
 }
 
-class ScopeButton(val scope: Scope) : JButton(scope.name, scope.icon)
+class ScopeButton(val scope: Scope) : JButton(scope.name, scope.icon) {
+
+    var isSelectedByUser: Boolean = false
+
+    fun setActive(state: Boolean) {
+        isSelectedByUser = state
+        isContentAreaFilled = state
+    }
+}
