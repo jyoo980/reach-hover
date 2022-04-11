@@ -14,6 +14,7 @@ import com.intellij.reference.SoftReference
 import com.intellij.slicer.SliceNode
 import com.intellij.ui.popup.PopupPositionManager
 import com.intellij.ui.popup.PopupUpdateProcessor
+import com.intellij.util.ui.JBDimension
 import icons.IconManager
 import java.lang.ref.Reference
 import java.lang.ref.WeakReference
@@ -21,6 +22,7 @@ import java.lang.ref.WeakReference
 class ShowReachabilityElementsAction {
 
     private var popupRef: Reference<JBPopup>? = null
+    private val minimumPopupSize: JBDimension = JBDimension(566, 717, false)
 
     fun performForContext(
         context: ReachabilityContext,
@@ -57,7 +59,6 @@ class ShowReachabilityElementsAction {
                     // TODO: implement this?
                 }
             }
-        viewComponent.setSize(420, 200)
         val popupBuilder =
             JBPopupFactory.getInstance()
                 .createComponentPopupBuilder(viewComponent, viewComponent)
@@ -73,6 +74,7 @@ class ShowReachabilityElementsAction {
                 )
                 .setResizable(true)
                 .setMovable(true)
+                .setMinSize(minimumPopupSize)
                 .setRequestFocus(LookupManager.getActiveLookup(editor) != null)
         popup = popupBuilder.createPopup()
         PopupPositionManager.positionPopupInBestPosition(
