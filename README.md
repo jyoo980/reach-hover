@@ -1,39 +1,46 @@
 # reach-hover
 
 ![Build](https://github.com/jyoo980/reach-hover/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Verify the [pluginGroup](/gradle.properties), [plugin ID](/src/main/resources/META-INF/plugin.xml) and [sources package](/src/main/kotlin).
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the Plugin ID in the above README badges.
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
 
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
+`reach-hover` is a research plugin that is being developed at the [Software Practices Lab](https://spl.cs.ubc.ca) at
+the [University of British Columbia](https://www.ubc.ca), Vancouver. It aims to make answering 
+*[reachability questions](https://cs.gmu.edu/~tlatoza/papers/icse2010.pdf)* easier for software developers, and surface
+information about them faster than conventional tools.
 
-To keep everything working, do not remove `<!-- ... -->` sections. 
+Currently, `reach-hover` supports two reachability questions, which are:
+
+  * "How was this value (could be a variable, an object, etc...) created?"
+  * "How is this value modified?"
+
+The plugin presents these questions when a user hovers over a value of interest in code. `reach-hover` currently has
+full support for Java, while support for Kotlin and other languages is 
+[in progress](https://github.com/jyoo980/reach-hover/pull/30).
+
 <!-- Plugin description end -->
+
+## Screenshots
+
+<p>
+<img src = "./assets/hover.png">
+</p>
+<p>
+Hovering over an element of interest will invoke a popup dialogue with the option to investigate it further in the 
+context of a reachability question.
+</p>
+
+<p>
+<img src = "./assets/popup.png">
+</p>
+<p>
+Selecting the question of interest will bring up an exploratory popup where a user is able to trace the dataflow to
+the element under inspection.
+</p>
 
 ## Installation
 
-- Using IDE built-in plugin system:
-  
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "reach-hover"</kbd> >
-  <kbd>Install Plugin</kbd>
-  
-- Manually:
-
-  Download the [latest release](https://github.com/jyoo980/reach-hover/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
+Coming soon.
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
