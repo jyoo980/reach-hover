@@ -15,13 +15,14 @@ import javax.swing.SwingConstants
 
 object PresentationUtil {
 
+    private const val maxCharsInPath = 120
+
     fun constructFileComponent(node: SliceNode): Pair<JComponent, JComponent> {
         val containingFile = node.element?.value?.file
         val rawFileName = node.value?.element?.containingFile?.name
         val fullPath =
             node.project?.let {
-                getPresentablePath(it, containingFile, maxChars = 120)
-                    ?.removeSuffix("/$rawFileName")
+                getPresentablePath(it, containingFile)?.removeSuffix("/$rawFileName")
             }
         val fileNameComponent =
             JLabel((rawFileName ?: "File not found"), SwingConstants.LEFT).also {
@@ -40,7 +41,6 @@ object PresentationUtil {
     private fun getPresentablePath(
         project: Project,
         virtualFile: VirtualFile?,
-        maxChars: Int
     ): String? {
         return virtualFile?.let {
             val projectDir = project.guessProjectDir()
@@ -50,8 +50,8 @@ object PresentationUtil {
                     VfsUtilCore.getRelativeLocation(it, projectDir)
                 } else FileUtil.getLocationRelativeToUserHome(it.path)
             return path?.let { p ->
-                maxChars.takeIf { chars -> chars < 0 }?.let { path }
-                    ?: StringUtil.trimMiddle(p, maxChars)
+                maxCharsInPath.takeIf { chars -> chars < 0 }?.let { path }
+                    ?: StringUtil.trimMiddle(p, maxCharsInPath)
             }
         }
     }

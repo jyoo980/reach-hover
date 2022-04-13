@@ -4,7 +4,6 @@ import com.github.jyoo980.reachhover.model.ReachabilityContext
 import com.github.jyoo980.reachhover.ui.ReachabilityPanel
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.ActiveIcon
 import com.intellij.openapi.ui.popup.JBPopup
@@ -21,7 +20,6 @@ import java.lang.ref.WeakReference
 
 class ShowReachabilityElementsAction {
 
-    private val logger: Logger = Logger.getInstance(ShowReachabilityElementsAction::class.java)
     private var popupRef: Reference<JBPopup>? = null
     private val minimumPopupSize: JBDimension = JBDimension(566, 717, false)
 
