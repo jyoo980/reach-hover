@@ -7,5 +7,7 @@ import com.intellij.ui.awt.RelativePoint
 data class ReachabilityHoverContext(
     val elementToInspect: PsiElement,
     val location: RelativePoint,
-    val editor: Editor
+    val editor: Editor,
+    val isForwardAnalysis: Boolean,
+    val elementName: String,
 )
