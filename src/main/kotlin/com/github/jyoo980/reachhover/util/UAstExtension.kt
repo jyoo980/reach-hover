@@ -16,7 +16,7 @@ import org.jetbrains.uast.*
 fun UElement.isNonLiteralMethodArg(): Boolean {
     val parents = collectParents(stopWhen = { it is UFile })
     val locationOfCallExpr =
-        parents.indexOfFirst { it is UCallExpression }.takeIf { it >= 0 } ?: return false
+        parents.indexOfFirst { it is UCallExpression }.takeIf { it > 0 } ?: return false
     val nameOfElement = (this as? UIdentifier)?.name ?: return false
     val arguments = (parents[locationOfCallExpr] as? UCallExpression)?.valueArguments
     return parents
@@ -36,7 +36,9 @@ fun UElement.isLocalVariableReference(): Boolean {
 }
 
 fun UElement.presentableName(): String? {
-    return (this as? UIdentifier)?.name
+    return (this as? UIdentifier)?.name?.let {
+        "<span style=\"font-family:JetBrains Mono;\">$it</font></span>"
+    }
 }
 
 private fun UElement.collectParents(stopWhen: (UElement) -> Boolean): List<UElement> {
