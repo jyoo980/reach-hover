@@ -28,6 +28,18 @@ object SliceDispatchService {
         )
     }
 
+    fun sliceRootUsage(
+        elementAtHover: PsiElement,
+        project: Project,
+        params: SliceAnalysisParams
+    ): SliceRootNode {
+        return SliceRootNode(
+            project,
+            DuplicateMap(),
+            LanguageSlicing.getProvider(elementAtHover).createRootUsage(elementAtHover, params)
+        )
+    }
+
     private fun defaultAnalysisParams(
         element: PsiElement,
         isForwardSlice: Boolean

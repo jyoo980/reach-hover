@@ -7,6 +7,7 @@ import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiIdentifier
+import com.intellij.ui.awt.RelativePoint
 import icons.IconManager
 import javax.swing.JButton
 import javax.swing.SwingConstants
@@ -25,7 +26,7 @@ sealed class ReachabilityButton(
 
     abstract fun setButtonText(providedIdentifierName: String? = null)
 
-    fun activateAction(editor: Editor) {
+    fun activateAction(editor: Editor, location: RelativePoint) {
         editor.project?.also { project ->
             ui.addActionListener {
                 val expressionToAnalyze =
@@ -40,7 +41,12 @@ sealed class ReachabilityButton(
                             ui.text,
                         )
                     ShowReachabilityElementsAction()
-                        .performForContext(reachabilityContext, sliceRoot, dataflowFromHere)
+                        .performForContext(
+                            reachabilityContext,
+                            sliceRoot,
+                            dataflowFromHere,
+                            location
+                        )
                 }
             }
         }
