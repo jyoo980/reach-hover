@@ -17,12 +17,13 @@ fun UElement.isNonLiteralMethodArg(): Boolean {
     val parents = collectParents(stopWhen = { it is UFile })
     val locationOfCallExpr =
         parents.indexOfFirst { it is UCallExpression }.takeIf { it >= 0 } ?: return false
-    val isIdentifier = this is UIdentifier
+    val nameOfElement = (this as? UIdentifier)?.name ?: return false
+    val arguments = (parents[locationOfCallExpr] as? UCallExpression)?.valueArguments
     return parents
         .indexOfFirst { it is UAnonymousClass || it is ULambdaExpression }
         .takeIf { it >= 0 }
-        ?.let { it -> isIdentifier && locationOfCallExpr < it }
-        ?: isIdentifier
+        ?.let { it -> locationOfCallExpr < it }
+        ?: arguments?.mapNotNull { it.tryResolveNamed()?.name }?.contains(nameOfElement) ?: false
 }
 
 /**

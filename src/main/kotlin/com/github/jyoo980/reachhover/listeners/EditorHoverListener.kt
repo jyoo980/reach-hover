@@ -6,7 +6,6 @@ import com.github.jyoo980.reachhover.util.MouseHoverUtil
 import com.github.jyoo980.reachhover.util.isLocalVariableReference
 import com.github.jyoo980.reachhover.util.isNonLiteralMethodArg
 import com.github.jyoo980.reachhover.util.presentableName
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.event.EditorMouseMotionListener
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
@@ -17,7 +16,6 @@ import org.jetbrains.uast.toUElement
 
 internal class EditorHoverListener : EditorMouseMotionListener {
 
-    private val logger: Logger = Logger.getInstance(EditorHoverListener::class.java)
     private val reachabilityPopupManager: ReachabilityInfoPopupManager =
         ReachabilityInfoPopupManager()
     private val alarm: Alarm = Alarm()
