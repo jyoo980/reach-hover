@@ -5,17 +5,17 @@ import com.github.jyoo980.reachhover.services.ReachabilityInfoPopupManager
 import com.github.jyoo980.reachhover.util.MouseHoverUtil
 import com.github.jyoo980.reachhover.util.isLocalVariableReference
 import com.github.jyoo980.reachhover.util.isNonLiteralMethodArg
-import com.intellij.openapi.diagnostic.Logger
+import com.github.jyoo980.reachhover.util.presentableName
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.event.EditorMouseMotionListener
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.Alarm
 import kotlin.math.max
+import org.jetbrains.uast.toUElement
 
 internal class EditorHoverListener : EditorMouseMotionListener {
 
-    private val logger: Logger = Logger.getInstance(EditorHoverListener::class.java)
     private val reachabilityPopupManager: ReachabilityInfoPopupManager =
         ReachabilityInfoPopupManager()
     private val alarm: Alarm = Alarm()
@@ -29,13 +29,20 @@ internal class EditorHoverListener : EditorMouseMotionListener {
         MouseHoverUtil.targetOffset(e)?.let { offset ->
             val project = e.editor.project ?: return
             val elementToAnalyze = MouseHoverUtil.elementAtOffset(project, e.editor, offset)
-            elementToAnalyze
-                ?.takeIf { it.isNonLiteralMethodArg() || it.isLocalVariableReference() }
-                ?.let {
-                    val context =
-                        ReachabilityHoverContext(it, RelativePoint(e.mouseEvent), e.editor)
-                    reachabilityPopupManager.showReachabilityPopupFor(context)
-                }
+            val unifiedAstElement = elementToAnalyze?.toUElement()
+            val isForwardAnalysis = unifiedAstElement?.isLocalVariableReference() ?: false
+            val isBackwardAnalysis = unifiedAstElement?.isNonLiteralMethodArg() ?: false
+            elementToAnalyze?.takeIf { isForwardAnalysis || isBackwardAnalysis }?.let {
+                val context =
+                    ReachabilityHoverContext(
+                        it,
+                        RelativePoint(e.mouseEvent),
+                        e.editor,
+                        isForwardAnalysis,
+                        unifiedAstElement?.presentableName() ?: ""
+                    )
+                reachabilityPopupManager.showReachabilityPopupFor(context)
+            }
         }
             ?: reachabilityPopupManager.resetPopupState()
     }
