@@ -2,6 +2,7 @@ package com.github.jyoo980.reachhover.listeners
 
 import com.github.jyoo980.reachhover.model.ReachabilityHoverContext
 import com.github.jyoo980.reachhover.services.ReachabilityInfoPopupManager
+import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
 import com.github.jyoo980.reachhover.util.MouseHoverUtil
 import com.github.jyoo980.reachhover.util.isLocalVariableReference
 import com.github.jyoo980.reachhover.util.isNonLiteralMethodArg
@@ -32,17 +33,20 @@ internal class EditorHoverListener : EditorMouseMotionListener {
             val unifiedAstElement = elementToAnalyze?.toUElement()
             val isForwardAnalysis = unifiedAstElement?.isLocalVariableReference() ?: false
             val isBackwardAnalysis = unifiedAstElement?.isNonLiteralMethodArg() ?: false
-            elementToAnalyze?.takeIf { isForwardAnalysis || isBackwardAnalysis }?.let {
-                val context =
-                    ReachabilityHoverContext(
-                        it,
-                        RelativePoint(e.mouseEvent),
-                        e.editor,
-                        isForwardAnalysis,
-                        unifiedAstElement?.presentableName() ?: ""
-                    )
-                reachabilityPopupManager.showReachabilityPopupFor(context)
-            }
+            elementToAnalyze
+                ?.takeIf { SliceDispatchService.isAnalyzerAvailable(it) }
+                ?.takeIf { isForwardAnalysis || isBackwardAnalysis }
+                ?.let {
+                    val context =
+                        ReachabilityHoverContext(
+                            it,
+                            RelativePoint(e.mouseEvent),
+                            e.editor,
+                            isForwardAnalysis,
+                            unifiedAstElement?.presentableName() ?: ""
+                        )
+                    reachabilityPopupManager.showReachabilityPopupFor(context)
+                }
         }
             ?: reachabilityPopupManager.resetPopupState()
     }

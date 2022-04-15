@@ -40,6 +40,9 @@ object SliceDispatchService {
         )
     }
 
+    fun isAnalyzerAvailable(elementAtHover: PsiElement): Boolean =
+        LanguageSlicing.getProvider(elementAtHover) != null
+
     private fun defaultAnalysisParams(
         element: PsiElement,
         isForwardSlice: Boolean
