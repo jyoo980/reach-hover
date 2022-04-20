@@ -42,6 +42,7 @@ import javax.swing.event.TreeExpansionEvent
 import javax.swing.event.TreeWillExpandListener
 import javax.swing.tree.*
 
+@Suppress("UnstableApiUsage")
 abstract class ReachabilityPanel(
     val elementUnderAnalysis: PsiElement,
     project: Project,
