@@ -11,5 +11,12 @@
         <editorFactoryMouseMotionListener
                 implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
     </extensions>
-
+    <applicationListeners>
+        <listener
+                class="com.github.jyoo980.reachhover.analytics.ReachHoverAnalyticsService"
+                topic="com.intellij.openapi.actionSystem.ex.AnActionListener"/>
+        <listener
+                class="com.github.jyoo980.reachhover.analytics.FileListener"
+                topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+    </applicationListeners>
 </idea-plugin>
