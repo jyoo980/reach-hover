@@ -71,7 +71,7 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
         if (isReachHoverEvent(e) && isMousePressed) {
             numTimesReachHoverInvoked++
             logger.info(
-                "==== ReachHoverAnalytics: ReachHover invoked: $numTimesDataflowInvoked time(s) ===="
+                "==== ReachHoverAnalytics: ReachHover invoked: $numTimesReachHoverInvoked time(s) ===="
             )
         }
     }
