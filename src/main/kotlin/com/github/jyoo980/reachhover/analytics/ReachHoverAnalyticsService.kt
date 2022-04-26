@@ -36,6 +36,10 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
         }
     }
 
+    override fun dispose() {
+        Toolkit.getDefaultToolkit().removeAWTEventListener(this)
+    }
+
     private fun checkForDataflowAnalysisInvocation(e: AWTEvent) {
         val mouseEvent = e as? MouseEvent
         val isMousePressed = mouseEvent?.let { it.id == MouseEvent.MOUSE_PRESSED } ?: false
@@ -45,15 +49,13 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
             } else if (isOkButtonClicked(e)) {
                 if (prevActionChain.any(::isDataflowAnalysisEvent)) {
                     numTimesDataflowInvoked++
-                    logger.info("Dataflow Analysis invoked: $numTimesDataflowInvoked time(s)")
+                    logger.info(
+                        "==== ReachHoverAnalytics: Dataflow Analysis invoked: $numTimesDataflowInvoked time(s) ===="
+                    )
                     prevActionChain.clear()
                 }
             }
         }
-    }
-
-    override fun dispose() {
-        Toolkit.getDefaultToolkit().removeAWTEventListener(this)
     }
 
     private fun isDataflowAnalysisEvent(event: AWTEvent): Boolean {
@@ -68,7 +70,9 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
         val isMousePressed = mouseEvent?.let { it.id == MouseEvent.MOUSE_PRESSED } ?: false
         if (isReachHoverEvent(e) && isMousePressed) {
             numTimesReachHoverInvoked++
-            logger.info("ReachHover invoked: $numTimesReachHoverInvoked time(s)")
+            logger.info(
+                "==== ReachHoverAnalytics: ReachHover invoked: $numTimesDataflowInvoked time(s) ===="
+            )
         }
     }
 
