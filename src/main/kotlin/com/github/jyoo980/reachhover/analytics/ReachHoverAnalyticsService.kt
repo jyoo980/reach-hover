@@ -83,6 +83,6 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
     }
 
     private fun isOkButtonClicked(event: AWTEvent): Boolean {
-        return (event.source as? JButton)?.let { it.text == "OK" } ?: false
+        return (event.source as? JButton)?.let { it.text == "Analyze" || it.text == "OK" } ?: false
     }
 }
