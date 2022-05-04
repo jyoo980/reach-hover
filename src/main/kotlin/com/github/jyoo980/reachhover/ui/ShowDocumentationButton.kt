@@ -3,7 +3,6 @@ package com.github.jyoo980.reachhover.ui
 import com.github.jyoo980.reachhover.MyBundle
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.lookup.LookupManager
-import com.intellij.lang.documentation.ide.impl.IdeDocumentationTargetProviderImpl
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiElement
@@ -33,16 +32,9 @@ class ShowDocumentationButton(private val element: PsiElement) {
 
     fun activateAction(offset: Int, editor: Editor, location: RelativePoint) {
         ui.addActionListener {
-            val documentationTargetProvider = IdeDocumentationTargetProviderImpl(element.project)
-            val targets =
-                documentationTargetProvider.documentationTargets(
-                    editor,
-                    element.containingFile,
-                    offset
-                )
             documentationTargets(editor, offset)?.let { (targetElement, sourceElement) ->
-                val doc = DocumentationManager.getProviderFromElement(element)
-                val hint = doc.generateDoc(targetElement, sourceElement)
+                val docProvider = DocumentationManager.getProviderFromElement(element)
+                val hint = docProvider.generateDoc(targetElement, sourceElement)
                 val component = hint?.let(::JBLabel)
                 component?.let { docComponent ->
                     docComponent.border = JBUI.Borders.empty(10)
