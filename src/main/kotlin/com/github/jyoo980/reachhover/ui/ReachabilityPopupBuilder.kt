@@ -14,16 +14,17 @@ class ReachabilityPopupBuilder {
     // IntelliJ).
 
     fun constructPopupFor(reachabilityContext: ReachabilityHoverContext): JPanel {
-        val (element, location, editor, isForwardAnalysis, identifierName) = reachabilityContext
+        val (element, location, editor, isForwardAnalysis, identifierName, offset) =
+            reachabilityContext
         val reachabilityButton =
             createReachabilityButton(element, isForwardAnalysis).apply {
                 setButtonText(identifierName)
                 activateAction(editor, location)
             }
         val showDocumentationButton =
-            ShowDocumentationButton().apply {
+            ShowDocumentationButton(element).apply {
                 setButtonText()
-                activateAction()
+                activateAction(offset, editor, location)
             }
         return JPanel(GridLayout(2, 1)).apply {
             reachabilityButton.let { this.add(it.ui) }

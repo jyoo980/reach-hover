@@ -10,4 +10,5 @@ data class ReachabilityHoverContext(
     val editor: Editor,
     val isForwardAnalysis: Boolean,
     val elementName: String,
+    val offsetInEditor: Int
 )
