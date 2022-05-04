@@ -4,7 +4,6 @@ import com.github.jyoo980.reachhover.MyBundle
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.lang.documentation.ide.impl.IdeDocumentationTargetProviderImpl
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiElement
@@ -15,12 +14,11 @@ import icons.IconManager
 import javax.swing.JButton
 import javax.swing.SwingConstants
 
-// TODO: May need to parameterize this with a PsiElement to properly register "Show Docs" action.
+@Suppress("UnstableApiUsage")
 class ShowDocumentationButton(private val element: PsiElement) {
 
     // Text of this button reads: "Show types and documentation?"
     private val defaultButtonText: String = MyBundle.message("showDocumentation")
-    private val logger = Logger.getInstance(ShowDocumentationButton::class.java)
 
     val ui: JButton =
         JButton(IconManager.documentationIcon).apply {
