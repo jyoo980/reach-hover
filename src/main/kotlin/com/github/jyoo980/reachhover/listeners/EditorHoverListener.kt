@@ -43,7 +43,8 @@ internal class EditorHoverListener : EditorMouseMotionListener {
                             RelativePoint(e.mouseEvent),
                             e.editor,
                             isForwardAnalysis,
-                            unifiedAstElement?.presentableName() ?: ""
+                            unifiedAstElement?.presentableName() ?: "",
+                            offset
                         )
                     reachabilityPopupManager.showReachabilityPopupFor(context)
                 }
