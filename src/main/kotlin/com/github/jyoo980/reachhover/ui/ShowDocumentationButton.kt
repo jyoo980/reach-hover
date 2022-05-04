@@ -4,7 +4,6 @@ import com.github.jyoo980.reachhover.MyBundle
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.lang.documentation.ide.impl.IdeDocumentationTargetProviderImpl
-import com.intellij.lang.documentation.psi.PsiElementDocumentationTarget
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiElement
@@ -41,9 +40,9 @@ class ShowDocumentationButton(private val element: PsiElement) {
                     element.containingFile,
                     offset
                 )
-            targets.takeIf { it.isNotEmpty() }?.let {
-                val targets = it.first() as? PsiElementDocumentationTarget
-                val hint = targets?.computeDocumentationHint()
+            documentationTargets(editor, offset)?.let { (targetElement, sourceElement) ->
+                val doc = DocumentationManager.getProviderFromElement(element)
+                val hint = doc.generateDoc(targetElement, sourceElement)
                 val component = hint?.let(::JBLabel)
                 component?.let { docComponent ->
                     docComponent.border = JBUI.Borders.empty(10)
@@ -51,11 +50,6 @@ class ShowDocumentationButton(private val element: PsiElement) {
                         JBPopupFactory.getInstance()
                             .createComponentPopupBuilder(docComponent, docComponent)
                             .setProject(editor.project)
-                            .setDimensionServiceKey(
-                                editor.project,
-                                DocumentationManager.JAVADOC_LOCATION_AND_SIZE,
-                                false
-                            )
                             .setResizable(true)
                             .setMovable(true)
                             .setRequestFocus(LookupManager.getActiveLookup(editor) != null)
@@ -64,5 +58,12 @@ class ShowDocumentationButton(private val element: PsiElement) {
                 }
             }
         }
+    }
+
+    private fun documentationTargets(editor: Editor, offset: Int): Pair<PsiElement, PsiElement?>? {
+        val docManager = DocumentationManager(element.project)
+        val elements =
+            docManager.findTargetElementAndContext(editor, offset, element.containingFile)
+        return elements?.let { it -> it.first to it.second }
     }
 }
