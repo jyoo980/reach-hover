@@ -10,6 +10,9 @@
     <extensions defaultExtensionNs="com.intellij">
         <editorFactoryMouseMotionListener
                 implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
+        <notificationGroup id="ReachHover"
+                           displayType="BALLOON"/>
+
     </extensions>
     <applicationListeners>
         <listener
@@ -19,4 +22,15 @@
                 class="com.github.jyoo980.reachhover.analytics.FileListener"
                 topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
     </applicationListeners>
+
+    <actions>
+        <action id="reach-hover.task.start" class="com.github.jyoo980.reachhover.actions.StartTaskAction"
+                text="Start ReachHover Task" description="Click this button to start a ReachHover task">
+            <add-to-group group-id="ToolbarRunGroup" anchor="first"/>
+        </action>
+        <action id="reach-hover.task.complete" class="com.github.jyoo980.reachhover.actions.FinishTaskAction"
+                text="Complete ReachHover Task" description="Click this button to complete a ReachHover task">
+            <add-to-group group-id="ToolbarRunGroup" relative-to-action="reach-hover.task.start" anchor="after"/>
+        </action>
+    </actions>
 </idea-plugin>
