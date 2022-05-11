@@ -1,6 +1,8 @@
 # reach-hover
 
 ![Build](https://github.com/jyoo980/reach-hover/workflows/Build/badge.svg)
+[![Version](https://img.shields.io/jetbrains/plugin/v/18950-reach-hover.svg)](https://plugins.jetbrains.com/plugin/18950-reach-hover)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/18950-reach-hover.svg)](https://plugins.jetbrains.com/plugin/18950-reach-hover)
 
 <!-- Plugin description -->
 
@@ -15,8 +17,7 @@ Currently, `reach-hover` supports two reachability questions, which are:
   * "How is this value modified?"
 
 The plugin presents these questions when a user hovers over a value of interest in code. `reach-hover` currently has
-full support for Java, while support for Kotlin and other languages is 
-[in progress](https://github.com/jyoo980/reach-hover/pull/30).
+full support for Java and Kotlin.
 
 <!-- Plugin description end -->
 
@@ -40,7 +41,16 @@ the element under inspection.
 
 ## Installation
 
-Coming soon.
+Please note that this tool is a **research prototype**. Bugs are to be expected,
+but feel free to file an issue for me to look at.
+
+### From the JetBrains Marketplace
+
+`reach-hover` can be downloaded from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/18950-reach-hover).
+
+### From source
+
+TODO
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
