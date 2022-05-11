@@ -1,6 +1,8 @@
 # reach-hover
 
 ![Build](https://github.com/jyoo980/reach-hover/workflows/Build/badge.svg)
+[![Version](https://img.shields.io/jetbrains/plugin/v/18950-reach-hover.svg)](https://plugins.jetbrains.com/plugin/18950-reach-hover)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/18950-reach-hover.svg)](https://plugins.jetbrains.com/plugin/18950-reach-hover)
 
 <!-- Plugin description -->
 
