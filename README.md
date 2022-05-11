@@ -42,7 +42,16 @@ the element under inspection.
 
 ## Installation
 
-Coming soon.
+Please note that this tool is a **research prototype**. Bugs are to be expected,
+but feel free to file an issue for me to look at.
+
+### From the JetBrains Marketplace
+
+`reach-hover` can be downloaded from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/18950-reach-hover).
+
+### From source
+
+TODO
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
