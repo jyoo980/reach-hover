@@ -17,8 +17,7 @@ Currently, `reach-hover` supports two reachability questions, which are:
   * "How is this value modified?"
 
 The plugin presents these questions when a user hovers over a value of interest in code. `reach-hover` currently has
-full support for Java, while support for Kotlin and other languages is 
-[in progress](https://github.com/jyoo980/reach-hover/pull/30).
+full support for Java and Kotlin.
 
 <!-- Plugin description end -->
 
