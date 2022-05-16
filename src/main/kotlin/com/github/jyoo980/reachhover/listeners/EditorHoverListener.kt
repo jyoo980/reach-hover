@@ -12,8 +12,8 @@ import com.intellij.openapi.editor.event.EditorMouseMotionListener
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.Alarm
-import kotlin.math.max
 import org.jetbrains.uast.toUElement
+import kotlin.math.max
 
 internal class EditorHoverListener : EditorMouseMotionListener {
 
@@ -39,12 +39,12 @@ internal class EditorHoverListener : EditorMouseMotionListener {
                 ?.let {
                     val context =
                         ReachabilityHoverContext(
-                            it,
-                            RelativePoint(e.mouseEvent),
-                            e.editor,
-                            isForwardAnalysis,
-                            unifiedAstElement?.presentableName() ?: "",
-                            offset
+                            elementToInspect = it,
+                            location = RelativePoint(e.mouseEvent),
+                            editor = e.editor,
+                            isForwardAnalysis = isForwardAnalysis,
+                            elementName = unifiedAstElement?.presentableName() ?: "",
+                            offsetInEditor = offset
                         )
                     reachabilityPopupManager.showReachabilityPopupFor(context)
                 }
@@ -56,6 +56,6 @@ internal class EditorHoverListener : EditorMouseMotionListener {
         max(
             0,
             EditorSettingsExternalizable.getInstance().tooltipsDelay -
-                (System.currentTimeMillis() - startTimeMs)
+                    (System.currentTimeMillis() - startTimeMs)
         )
 }
