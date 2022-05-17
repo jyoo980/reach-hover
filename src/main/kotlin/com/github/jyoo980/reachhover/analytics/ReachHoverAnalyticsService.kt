@@ -7,7 +7,6 @@ import com.github.jyoo980.reachhover.analytics.AnalyticsValues.reachHoverForward
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ex.AnActionListener
 import com.intellij.openapi.actionSystem.impl.ActionMenuItem
-import com.intellij.openapi.diagnostic.Logger
 import java.awt.AWTEvent
 import java.awt.Toolkit
 import java.awt.event.AWTEventListener
@@ -16,7 +15,6 @@ import javax.swing.JButton
 
 class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposable {
 
-    private val logger: Logger = Logger.getInstance(ReachHoverAnalyticsService::class.java)
     private var numTimesDataflowInvoked = 0
     private var numTimesReachHoverInvoked = 0
     private var prevActionChain: MutableList<AWTEvent> = mutableListOf()
@@ -49,8 +47,9 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
             } else if (isOkButtonClicked(e)) {
                 if (prevActionChain.any(::isDataflowAnalysisEvent)) {
                     numTimesDataflowInvoked++
-                    logger.info(
-                        "==== ReachHoverAnalytics: Dataflow Analysis invoked: $numTimesDataflowInvoked time(s) ===="
+                    LogWriter.write(
+                        "Dataflow Analysis invoked: $numTimesDataflowInvoked time(s)",
+                        EventType.STANDARD_DATAFLOW_INVOKED
                     )
                     prevActionChain.clear()
                 }
@@ -70,8 +69,9 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
         val isMousePressed = mouseEvent?.let { it.id == MouseEvent.MOUSE_PRESSED } ?: false
         if (isReachHoverEvent(e) && isMousePressed) {
             numTimesReachHoverInvoked++
-            logger.info(
-                "==== ReachHoverAnalytics: ReachHover invoked: $numTimesReachHoverInvoked time(s) ===="
+            LogWriter.write(
+                "ReachHover invoked: $numTimesReachHoverInvoked time(s)",
+                EventType.REACH_HOVER_INVOKED
             )
         }
     }
