@@ -39,12 +39,12 @@ internal class EditorHoverListener : EditorMouseMotionListener {
                 ?.let {
                     val context =
                         ReachabilityHoverContext(
-                            it,
-                            RelativePoint(e.mouseEvent),
-                            e.editor,
-                            isForwardAnalysis,
-                            unifiedAstElement?.presentableName() ?: "",
-                            offset
+                            elementToInspect = it,
+                            location = RelativePoint(e.mouseEvent),
+                            editor = e.editor,
+                            isForwardAnalysis = isForwardAnalysis,
+                            elementName = unifiedAstElement?.presentableName() ?: "",
+                            offsetInEditor = offset
                         )
                     reachabilityPopupManager.showReachabilityPopupFor(context)
                 }

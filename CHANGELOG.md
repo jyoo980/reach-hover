@@ -3,5 +3,7 @@
 # reach-hover Changelog
 
 ## [Unreleased]
+
+## [1.0.2] - 2022-05-19
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+- Bugfix/workaround for overlapping popups on mouse hover.

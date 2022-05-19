@@ -2,6 +2,8 @@ package com.github.jyoo980.reachhover.services
 
 import com.github.jyoo980.reachhover.model.ReachabilityHoverContext
 import com.github.jyoo980.reachhover.ui.ReachabilityPopupBuilder
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.impl.EditorMouseHoverPopupControl
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import java.lang.ref.WeakReference
@@ -27,6 +29,10 @@ class ReachabilityInfoPopupManager {
                 .setCancelOnClickOutside(true)
                 .createPopup()
         currentPopupRef = WeakReference(popup)
+
+        ApplicationManager.getApplication().invokeLater {
+            currentContext?.editor?.let { EditorMouseHoverPopupControl.disablePopups(it) }
+        }
         popup.show(popupContext.location)
     }
 
@@ -42,5 +48,8 @@ class ReachabilityInfoPopupManager {
     private fun closePopup() {
         currentPopupRef?.get()?.also { it.cancel() }
         currentPopupRef?.clear()
+        ApplicationManager.getApplication().invokeLater {
+            currentContext?.editor?.let { EditorMouseHoverPopupControl.enablePopups(it) }
+        }
     }
 }
