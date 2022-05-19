@@ -12,8 +12,8 @@ import com.intellij.openapi.editor.event.EditorMouseMotionListener
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.Alarm
-import org.jetbrains.uast.toUElement
 import kotlin.math.max
+import org.jetbrains.uast.toUElement
 
 internal class EditorHoverListener : EditorMouseMotionListener {
 
@@ -56,6 +56,6 @@ internal class EditorHoverListener : EditorMouseMotionListener {
         max(
             0,
             EditorSettingsExternalizable.getInstance().tooltipsDelay -
-                    (System.currentTimeMillis() - startTimeMs)
+                (System.currentTimeMillis() - startTimeMs)
         )
 }

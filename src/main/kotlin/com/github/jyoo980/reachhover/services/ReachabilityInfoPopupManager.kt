@@ -31,30 +31,29 @@ class ReachabilityInfoPopupManager {
         currentPopupRef = WeakReference(popup)
 
         ApplicationManager.getApplication().invokeLater {
-            currentContext?.editor?.let {
-                EditorMouseHoverPopupControl.disablePopups(it)
-            }
+            currentContext?.editor?.let { EditorMouseHoverPopupControl.disablePopups(it) }
         }
         popup.show(popupContext.location)
 
-//        // WIP: Trying to show the popup at the bottom of QuickDoc hint
-//        val editor = currentContext?.editor ?: return
-//        val project = editor.project ?: return
-//        val manager = DocumentationManager.getInstance(project)
-//
-//        if (EditorMouseHoverPopupControl.arePopupsDisabled(editor)) {
-//            popup.show(popupContext.location)
-//        } else {
-//            val element = currentContext?.elementToInspect ?: return
-//            val component = QuickDocUtil.getActiveDocComponent(project)
-//
-//            val i = 10
-//            println(i)
-//
-//            val docHint: JBPopup = manager.docInfoHint ?: return
-//            val loc = docHint.locationOnScreen
-//            popup.showInScreenCoordinates(docHint.owner, Point(loc.x, loc.y + docHint.size.height))
-//        }
+        //        // WIP: Trying to show the popup at the bottom of QuickDoc hint
+        //        val editor = currentContext?.editor ?: return
+        //        val project = editor.project ?: return
+        //        val manager = DocumentationManager.getInstance(project)
+        //
+        //        if (EditorMouseHoverPopupControl.arePopupsDisabled(editor)) {
+        //            popup.show(popupContext.location)
+        //        } else {
+        //            val element = currentContext?.elementToInspect ?: return
+        //            val component = QuickDocUtil.getActiveDocComponent(project)
+        //
+        //            val i = 10
+        //            println(i)
+        //
+        //            val docHint: JBPopup = manager.docInfoHint ?: return
+        //            val loc = docHint.locationOnScreen
+        //            popup.showInScreenCoordinates(docHint.owner, Point(loc.x, loc.y +
+        // docHint.size.height))
+        //        }
     }
 
     fun resetPopupState() {
@@ -70,9 +69,7 @@ class ReachabilityInfoPopupManager {
         currentPopupRef?.get()?.also { it.cancel() }
         currentPopupRef?.clear()
         ApplicationManager.getApplication().invokeLater {
-            currentContext?.editor?.let {
-                EditorMouseHoverPopupControl.enablePopups(it)
-            }
+            currentContext?.editor?.let { EditorMouseHoverPopupControl.enablePopups(it) }
         }
     }
 }
