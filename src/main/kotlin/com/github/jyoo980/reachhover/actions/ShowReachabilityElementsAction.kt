@@ -6,7 +6,6 @@ import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.codeInsight.lookup.LookupManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ui.popup.ActiveIcon
-import com.intellij.openapi.ui.popup.IconButton
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiElement
@@ -76,7 +75,8 @@ class ShowReachabilityElementsAction {
                 .addUserData(updateProcessor)
                 .setCancelOnWindowDeactivation(false)
                 .setCancelOnOtherWindowOpen(false)
-//                .setCancelButton(IconButton("Close", IconManager.startTaskIcon, null)) // doesn't appear to work
+                //                .setCancelButton(IconButton("Close", IconManager.startTaskIcon,
+                // null)) // doesn't appear to work
                 .setTitle(questionText)
                 .setTitleIcon(IconManager.reachabilityIcon.let(::ActiveIcon))
                 .setDimensionServiceKey(
