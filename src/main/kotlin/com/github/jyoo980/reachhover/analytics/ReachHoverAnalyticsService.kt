@@ -7,6 +7,7 @@ import com.github.jyoo980.reachhover.analytics.AnalyticsValues.reachHoverForward
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.ex.AnActionListener
 import com.intellij.openapi.actionSystem.impl.ActionMenuItem
+import com.intellij.ui.treeStructure.Tree
 import java.awt.AWTEvent
 import java.awt.Toolkit
 import java.awt.event.AWTEventListener
@@ -31,6 +32,7 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
         event?.let {
             checkForDataflowAnalysisInvocation(it)
             checkForReachHoverInvocation(it)
+            checkForMousePress(it)
         }
     }
 
@@ -73,6 +75,21 @@ class ReachHoverAnalyticsService : AWTEventListener, AnActionListener, Disposabl
                 "ReachHover invoked: $numTimesReachHoverInvoked time(s)",
                 EventType.REACH_HOVER_INVOKED
             )
+        }
+    }
+
+    private fun checkForMousePress(e: AWTEvent) {
+        val mouseEvent = e as? MouseEvent
+        val isMousePressed = mouseEvent?.let { it.id == MouseEvent.MOUSE_PRESSED } ?: false
+        if (isMousePressed) {
+            mouseEvent?.source?.let {
+                val tree = it as? Tree
+                val treeNodeOrEventSource = tree?.selectionPath?.lastPathComponent ?: it
+                LogWriter.write(
+                    "Mouse clicked at source: $treeNodeOrEventSource",
+                    EventType.MOUSE_CLICK
+                )
+            }
         }
     }
 
