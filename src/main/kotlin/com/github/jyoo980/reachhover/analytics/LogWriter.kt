@@ -49,4 +49,5 @@ enum class EventType {
     REACH_HOVER_INVOKED,
     FILE_OPEN,
     FILE_CLOSED,
+    MOUSE_CLICK
 }
