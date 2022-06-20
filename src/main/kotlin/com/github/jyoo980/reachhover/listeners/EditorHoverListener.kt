@@ -1,6 +1,8 @@
 package com.github.jyoo980.reachhover.listeners
 
+import com.github.jyoo980.reachhover.MyBundle
 import com.github.jyoo980.reachhover.model.ReachabilityHoverContext
+import com.github.jyoo980.reachhover.services.NotificationService
 import com.github.jyoo980.reachhover.services.ReachabilityInfoPopupManager
 import com.github.jyoo980.reachhover.services.slicer.SliceDispatchService
 import com.github.jyoo980.reachhover.util.MouseHoverUtil
@@ -10,6 +12,7 @@ import com.github.jyoo980.reachhover.util.presentableName
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.event.EditorMouseMotionListener
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
+import com.intellij.openapi.project.DumbService
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.Alarm
 import kotlin.math.max
@@ -22,8 +25,16 @@ internal class EditorHoverListener : EditorMouseMotionListener {
     private val alarm: Alarm = Alarm()
 
     override fun mouseMoved(e: EditorMouseEvent) {
-        val actionStartTimeMs = System.currentTimeMillis()
-        alarm.addRequest({ handleMouseEvent(e) }, actionDelayTime(actionStartTimeMs))
+        val dumbService = e.editor.project?.let { DumbService.getInstance(it) }
+        val isDumbModeActive = dumbService?.isDumb ?: true
+        if (isDumbModeActive) {
+            e.editor.project?.let {
+                NotificationService.showNotification(it, MyBundle.message("dumbModeMessage"))
+            }
+        } else {
+            val actionStartTimeMs = System.currentTimeMillis()
+            alarm.addRequest({ handleMouseEvent(e) }, actionDelayTime(actionStartTimeMs))
+        }
     }
 
     private fun handleMouseEvent(e: EditorMouseEvent) {
