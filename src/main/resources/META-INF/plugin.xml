@@ -25,11 +25,11 @@
 
     <actions>
         <action id="reach-hover.task.start" class="com.github.jyoo980.reachhover.actions.StartTaskAction"
-                text="Start ReachHover Task" description="Click this button to start a ReachHover task">
+                text="Start Task" description="Click this button to start an experimental task">
             <add-to-group group-id="ToolbarRunGroup" anchor="first"/>
         </action>
         <action id="reach-hover.task.complete" class="com.github.jyoo980.reachhover.actions.FinishTaskAction"
-                text="Complete ReachHover Task" description="Click this button to complete a ReachHover task">
+                text="Complete Task" description="Click this button to complete an experimental task">
             <add-to-group group-id="ToolbarRunGroup" relative-to-action="reach-hover.task.start" anchor="after"/>
         </action>
     </actions>
