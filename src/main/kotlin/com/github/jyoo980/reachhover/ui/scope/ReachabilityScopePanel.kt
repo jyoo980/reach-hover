@@ -31,7 +31,7 @@ class ReachabilityScopePanel(val reachabilityPanel: ReachabilityPanel) :
     }
 
     private fun setDefaultSelections() {
-        scopeSelectionButtons.firstOrNull { it.scope == File }?.setActive(true)
+        scopeSelectionButtons.firstOrNull { it.scope == Project }?.setActive(true)
     }
 
     private fun attachActions(button: ScopeButton) {
