@@ -50,7 +50,7 @@ object SliceDispatchService {
         return SliceAnalysisParams().apply {
             dataFlowToThis = !isForwardSlice
             showInstanceDereferences = true
-            scope = AnalysisScope(element.containingFile)
+            scope = AnalysisScope(element.project)
         }
     }
 }
