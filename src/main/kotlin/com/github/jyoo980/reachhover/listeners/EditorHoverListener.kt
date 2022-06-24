@@ -29,7 +29,9 @@ internal class EditorHoverListener : EditorMouseMotionListener {
         val isDumbModeActive = dumbService?.isDumb ?: true
         if (isDumbModeActive) {
             e.editor.project?.let {
-                NotificationService.showNotification(it, MyBundle.message("dumbModeMessage"))
+                if (!NotificationService.isNotReadyWarningActive(it)) {
+                    NotificationService.showNotification(it, MyBundle.message("dumbModeMessage"))
+                }
             }
         } else {
             val actionStartTimeMs = System.currentTimeMillis()

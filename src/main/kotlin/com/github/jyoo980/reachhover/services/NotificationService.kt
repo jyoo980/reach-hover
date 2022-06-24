@@ -15,7 +15,6 @@ object NotificationService {
         NotificationGroupManager.getInstance().getNotificationGroup(groupId)
 
     fun showNotification(project: Project, message: String) {
-        expireNotifications(project)
         val notification =
             notificationGroupManager
                 .createNotification(message, NotificationType.INFORMATION)
@@ -24,10 +23,10 @@ object NotificationService {
         notification.notify(project)
     }
 
-    private fun expireNotifications(project: Project) {
+    fun isNotReadyWarningActive(project: Project): Boolean {
         val notifications =
             NotificationsManager.getNotificationsManager()
                 .getNotificationsOfType(Notification::class.java, project)
-        notifications.filter { it.groupId == groupId }.forEach { it.expire() }
+        return notifications.any { it.content == MyBundle.message("dumbModeMessage") }
     }
 }
