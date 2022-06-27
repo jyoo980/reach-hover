@@ -12,14 +12,14 @@
                 implementation="com.github.jyoo980.reachhover.listeners.EditorHoverListener"/>
         <notificationGroup id="ReachHover"
                            displayType="BALLOON"/>
-
+        <postStartupActivity implementation="com.github.jyoo980.reachhover.actions.StartupAction"/>
     </extensions>
     <applicationListeners>
         <listener
                 class="com.github.jyoo980.reachhover.analytics.ReachHoverAnalyticsService"
                 topic="com.intellij.openapi.actionSystem.ex.AnActionListener"/>
         <listener
-                class="com.github.jyoo980.reachhover.analytics.FileListener"
+                class="com.github.jyoo980.reachhover.analytics.listeners.FileListener"
                 topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
     </applicationListeners>
 
