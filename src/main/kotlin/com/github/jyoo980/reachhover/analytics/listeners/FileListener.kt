@@ -1,5 +1,7 @@
-package com.github.jyoo980.reachhover.analytics
+package com.github.jyoo980.reachhover.analytics.listeners
 
+import com.github.jyoo980.reachhover.analytics.EventType
+import com.github.jyoo980.reachhover.analytics.LogWriter
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.vfs.VirtualFile
