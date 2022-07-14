@@ -39,8 +39,8 @@ class ReachabilityInfoPopupManager {
         ApplicationManager.getApplication().invokeLater {
             currentContext?.editor?.let { EditorMouseHoverPopupControl.disablePopups(it) }
         }
-        LogWriter.write("ReachHover popup shown", EventType.POPUP_EVENT)
         popup.show(popupContext.location)
+        LogWriter.write("ReachHover popup shown", EventType.POPUP_EVENT)
     }
 
     fun resetPopupState() {
