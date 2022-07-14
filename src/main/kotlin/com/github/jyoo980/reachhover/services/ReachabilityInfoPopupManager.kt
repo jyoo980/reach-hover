@@ -1,5 +1,7 @@
 package com.github.jyoo980.reachhover.services
 
+import com.github.jyoo980.reachhover.analytics.EventType
+import com.github.jyoo980.reachhover.analytics.LogWriter
 import com.github.jyoo980.reachhover.model.ReachabilityHoverContext
 import com.github.jyoo980.reachhover.ui.ReachabilityPopupBuilder
 import com.intellij.openapi.application.ApplicationManager
@@ -27,12 +29,17 @@ class ReachabilityInfoPopupManager {
             JBPopupFactory.getInstance()
                 .createComponentPopupBuilder(popupUI, null)
                 .setCancelOnClickOutside(true)
+                .setCancelCallback {
+                    LogWriter.write("ReachHover popup closed", EventType.POPUP_EVENT)
+                    true
+                }
                 .createPopup()
         currentPopupRef = WeakReference(popup)
 
         ApplicationManager.getApplication().invokeLater {
             currentContext?.editor?.let { EditorMouseHoverPopupControl.disablePopups(it) }
         }
+        LogWriter.write("ReachHover popup shown", EventType.POPUP_EVENT)
         popup.show(popupContext.location)
     }
 

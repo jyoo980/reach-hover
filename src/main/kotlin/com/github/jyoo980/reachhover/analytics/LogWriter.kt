@@ -51,4 +51,5 @@ enum class EventType {
     FILE_CLOSED,
     MOUSE_CLICK,
     CURSOR_JUMP,
+    POPUP_EVENT,
 }
