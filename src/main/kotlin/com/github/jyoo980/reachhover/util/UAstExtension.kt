@@ -22,7 +22,7 @@ fun UElement.isNonLiteralMethodArg(): Boolean {
     return parents
         .indexOfFirst { it is UAnonymousClass || it is ULambdaExpression }
         .takeIf { it >= 0 }
-        ?.let { it -> locationOfCallExpr < it }
+        ?.let { locationOfCallExpr < it }
         ?: arguments?.mapNotNull { it.tryResolveNamed()?.name }?.contains(nameOfElement) ?: false
 }
 

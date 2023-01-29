@@ -32,7 +32,7 @@ object MouseHoverUtil {
      */
     fun elementAtOffset(project: Project, editor: Editor, offset: Int): PsiElement? {
         val optFile = PsiDocumentManagerImpl.getInstance(project).getPsiFile(editor.document)
-        return optFile?.let { it ->
+        return optFile?.let {
             var element = it.findElementAt(offset)
             if (element == null && offset == it.textLength) {
                 element = it.findElementAt(offset - 1)
