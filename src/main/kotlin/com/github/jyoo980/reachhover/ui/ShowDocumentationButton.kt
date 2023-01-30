@@ -56,6 +56,6 @@ class ShowDocumentationButton(private val element: PsiElement) {
         val docManager = DocumentationManager(element.project)
         val elements =
             docManager.findTargetElementAndContext(editor, offset, element.containingFile)
-        return elements?.let { it -> it.first to it.second }
+        return elements?.let { it.first to it.second }
     }
 }

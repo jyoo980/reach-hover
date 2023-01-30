@@ -262,7 +262,7 @@ abstract class ReachabilityPanel(
 
     private val selectedUsageInfos: List<UsageInfo>?
         get() =
-            myTree.selectionPaths?.let { it ->
+            myTree.selectionPaths?.let {
                 it.mapNotNull { path ->
                     val sliceNode = fromPath(path)
                     sliceNode?.value?.usageInfo
@@ -286,12 +286,11 @@ abstract class ReachabilityPanel(
             for (path in paths) {
                 val lastPathComponent = path.lastPathComponent
                 if (lastPathComponent is DefaultMutableTreeNode) {
-                    val node = lastPathComponent
-                    val userObject = node.userObject
+                    val userObject = lastPathComponent.userObject
                     if (userObject is Navigatable) {
                         navigatables.add(userObject)
-                    } else if (node is Navigatable) {
-                        navigatables.add(node as Navigatable)
+                    } else if (lastPathComponent is Navigatable) {
+                        navigatables.add(lastPathComponent as Navigatable)
                     }
                 }
             }
