@@ -1,15 +1,17 @@
 # reach-hover
 
 ![Build](https://github.com/jyoo980/reach-hover/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/18950-reach-hover.svg)](https://plugins.jetbrains.com/plugin/18950-reach-hover)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/18950-reach-hover.svg)](https://plugins.jetbrains.com/plugin/18950-reach-hover)
 
 <!-- Plugin description -->
 
-`reach-hover` is a research plugin that is being developed at the [Software Practices Lab](https://spl.cs.ubc.ca) at
-the [University of British Columbia](https://www.ubc.ca), Vancouver. It aims to make answering 
-*[reachability questions](https://cs.gmu.edu/~tlatoza/papers/icse2010.pdf)* easier for software developers, and surface
-information about them faster than conventional tools.
+`reach-hover` is a research plugin developed at the
+[Software Practices Lab](https://spl.cs.ubc.ca) at the
+[University of British Columbia](https://www.ubc.ca), Vancouver.
+It aims to make answering 
+*[reachability questions](https://cs.gmu.edu/~tlatoza/papers/icse2010.pdf)*
+easier for software developers, and surface information about them faster than
+conventional tools.
 
 Currently, `reach-hover` supports two reachability questions, which are:
 
@@ -44,13 +46,20 @@ the element under inspection.
 Please note that this tool is a **research prototype**. Bugs are to be expected,
 but feel free to file an issue for me to look at.
 
-### From the JetBrains Marketplace
+### From Binaries
 
-`reach-hover` can be downloaded from the [JetBrains Plugin Marketplace](https://plugins.jetbrains.com/plugin/18950-reach-hover).
+Distributions of `reach-hover` are available under
+[releases](https://github.com/jyoo980/reach-hover/releases), which do not
+require you to download the source and build it.
 
-### From source
+### From Source
 
-TODO
+If you'd prefer to build the plugin from source, please clone the repository
+and run the Gradle tasks available.
+
+You can build the `.jar` by selecting `Tasks -> build -> jar`. You can skip
+this step altogether and run `reach-hover` on a locally running IntelliJ IDEA
+instance.
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
