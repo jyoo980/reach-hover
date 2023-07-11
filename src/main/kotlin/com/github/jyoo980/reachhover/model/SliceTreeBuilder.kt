@@ -42,18 +42,6 @@ class SliceTreeBuilder(
 
     override fun isAutoExpandNode(nodeDescriptor: NodeDescriptor<*>?): Boolean = false
 
-    fun switchToGroupedByLeavesNodes() {
-        val provider = getRootSliceNode().provider ?: return
-        analysisInProgress = true
-        provider.startAnalyzeLeafValues(treeStructure) { analysisInProgress = false }
-    }
-
-    fun switchToLeafNulls() {
-        val provider = getRootSliceNode().provider ?: return
-        analysisInProgress = true
-        provider.startAnalyzeNullness(treeStructure) { analysisInProgress = false }
-    }
-
     override fun createProgressIndicator(): ProgressIndicator? {
         return ProgressIndicatorBase(true)
     }
