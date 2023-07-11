@@ -75,8 +75,6 @@ class ShowReachabilityElementsAction {
                 .addUserData(updateProcessor)
                 .setCancelOnWindowDeactivation(false)
                 .setCancelOnOtherWindowOpen(false)
-                //                .setCancelButton(IconButton("Close", IconManager.startTaskIcon,
-                // null)) // doesn't appear to work
                 .setTitle(questionText)
                 .setTitleIcon(IconManager.reachabilityIcon.let(::ActiveIcon))
                 .setDimensionServiceKey(
