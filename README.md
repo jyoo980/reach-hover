@@ -68,5 +68,5 @@ Plugin based on the [IntelliJ Platform Plugin Template][template].
 
 ### Research
 
-- [Investigating Data-flow Reachability Questions (M.Sc. thesis](https://open.library.ubc.ca/soa/cIRcle/collections/ubctheses/24/items/1.0421073?o=0)
-- [Breaking the Bento Box: Accelerating Visual Momentum in Data-flow Analysis](https://homes.cs.washington.edu/~jmsy/pubs/breaking-the-bento-box-icsme2023-abstract.html)
+- [Investigating Data-flow Reachability Questions (M.Sc. thesis)](https://open.library.ubc.ca/soa/cIRcle/collections/ubctheses/24/items/1.0421073?o=0)
+- [Breaking the Bento Box: Accelerating Visual Momentum in Data-flow Analysis (ICSME '23)](https://homes.cs.washington.edu/~jmsy/pubs/breaking-the-bento-box-icsme2023-abstract.html)
