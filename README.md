@@ -21,6 +21,20 @@ Currently, `reach-hover` supports two reachability questions, which are:
 The plugin presents these questions when a user hovers over a value of interest in code. `reach-hover` currently has
 full support for Java and Kotlin.
 
+## Running `reach-hover`
+
+Due to changes in JetBrains' IntelliJ IDEA Platform API, `reach-hover` is
+not stable.
+Particularly, I would not recommend using it for development.
+
+
+If you want to run a historical (stable) version, you can run the following
+Gradle task from the command line:
+
+```sh
+% ./gradlew runIDE
+```
+
 <!-- Plugin description end -->
 
 ## Screenshots
