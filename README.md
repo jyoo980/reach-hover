@@ -25,7 +25,7 @@ full support for Java and Kotlin.
 
 Due to changes in JetBrains' IntelliJ IDEA Platform API, `reach-hover` is
 not stable.
-Particularly, I would not recommend using it for development.
+I would not recommend using it for development at this time.
 
 
 If you want to run a historical (stable) version, you can run the following
